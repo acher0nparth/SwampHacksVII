@@ -20,7 +20,7 @@ def Game_Loop():
     terr = {
         'grass' : terrain.Grass(),
         'dirt' : terrain.Dirt(),
-        'platform_br' : terrain.Platform()
+        # 'platform_br' : terrain.Platform()
     }
 
 

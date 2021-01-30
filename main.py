@@ -23,6 +23,8 @@ def Game_Loop():
         'platform_br' : terrain.Platform(1000, 400)
     }
 
+    haduk = []
+
     screen_width = 1440
     screen_height = 720
 
@@ -47,10 +49,33 @@ def Game_Loop():
             # Did the user click the window close button? If so, stop the loop.
             if event.type == QUIT:
                 running = False
+
+        for had in haduk:
+            if had.x < 1440 and had.x > 0:
+                had.x = had.x + had.vel
+            else:
+                haduk.pop(haduk.index(had))
         
         pressed_keys = pg.key.get_pressed()
         chars['player'].update(pressed_keys)
-        redrawGameWindow(screen, background, chars, terr, background_x)
+
+        if pressed_keys[K_SPACE]:
+            if chars['player'].left:
+                facing = -1
+            elif chars['player'].right:
+                facing = 1
+            else:
+                if chars['player'].wasLeft:
+                    facing = -1
+                else:
+                    facing = 1
+
+            if len(haduk) < 3:
+                #haduk.append(characters.Haduken(round((chars['player'].x + chars['player'].width)//2), round((chars['player'].y + chars['player'].height)//2), facing))
+                haduk.append(characters.Haduken(chars['player'].x, chars['player'].y, facing))
+
+
+        redrawGameWindow(screen, background, chars, terr, background_x, haduk)
 
         clock.tick(60)
 
@@ -58,7 +83,7 @@ def Game_Loop():
     pg.quit()
 
 
-def redrawGameWindow(screen, background, chars, terr, background_x) :
+def redrawGameWindow(screen, background, chars, terr, background_x, haduk) :
     relative_background_x = background_x[0] % background.get_rect().width
     screen_width = background.get_rect().width
 
@@ -83,6 +108,8 @@ def redrawGameWindow(screen, background, chars, terr, background_x) :
         else :
             screen.blit(chars['player'].player_standR, (chars['player'].x, chars['player'].y))
     
+    for had in haduk:
+        had.draw(screen)
     chars['bulldog'].draw(screen)
     chars['knight'].draw(screen)
     for y in range(24, 18, -1) :

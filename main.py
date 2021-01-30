@@ -9,9 +9,7 @@ from pygame.locals import *
 
 def Main():
 
-    Menu()
-    Game_Loop() 
-
+    Menu() 
 
 def Game_Loop():
 
@@ -110,7 +108,7 @@ def Menu():
         width = 18,
         height = 1, 
         font=("Trebuchet MS",24),
-        command=lambda:window.destroy()
+        command=lambda:multifunction(window.destroy(),Game_Loop())
     )
     start_game.pack()
     disp_highscores = tk.Button(

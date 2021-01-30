@@ -4,8 +4,6 @@ import pygame as pg
 import tkinter as tk
 from pygame.locals import *
 
-
-
 screen_width = 1440
 screen_height = 720
 
@@ -18,35 +16,6 @@ clock = pg.time.Clock()
 player = characters.Gator()
 bulldog = characters.Bulldog(100, 360, 1180)
 knight = characters.Knight()
-
-def redrawGameWindow() :
-    global background_x
-    global rel_bg_x
-    rel_bg_x = background_x % background.get_rect().width
-
-    screen.blit(background, (rel_bg_x - background.get_rect().width, 0))
-    if rel_bg_x < screen_width :
-        screen.blit(background, (rel_bg_x, 0))
-    screen.blit(knight.surf, knight.rect)
-
-    if player.walkCount + 1 >= 59 :
-        player.walkCount = 0
-    if player.left :
-        screen.blit(player.walkLeft[player.walkCount//10], (player.x, player.y))
-        player.walkCount += 1
-    elif player.right :
-        screen.blit(player.walkRight[player.walkCount//10], (player.x, player.y))
-        player.walkCount += 1
-        if player.x > screen_width / 3 :
-            background_x -= 5
-    else :
-        if player.wasLeft :
-            screen.blit(player.player_standL, (player.x, player.y))
-        else :
-            screen.blit(player.player_standR, (player.x, player.y))
-    
-    bulldog.draw(screen)
-    pg.display.update()
 
 def Main():
 
@@ -75,6 +44,38 @@ def Main():
 
     # Done! Time to quit.
     pg.quit()
+
+def redrawGameWindow() :
+    global background_x
+    global rel_bg_x
+    rel_bg_x = background_x % background.get_rect().width
+
+    screen.blit(background, (rel_bg_x - background.get_rect().width, 0))
+
+
+    if rel_bg_x < screen_width :
+        screen.blit(background, (rel_bg_x, 0))
+    screen.blit(knight.surf, knight.rect)
+
+    if player.walkCount + 1 >= 59 :
+        player.walkCount = 0
+    if player.left :
+        screen.blit(player.walkLeft[player.walkCount//10], (player.x, player.y))
+        player.walkCount += 1
+    elif player.right :
+        screen.blit(player.walkRight[player.walkCount//10], (player.x, player.y))
+        player.walkCount += 1
+        if player.x >= screen_width * 2 / 3 - player.width * 3 - player.vel:
+            background_x -= 5
+    else :
+        if player.wasLeft :
+            screen.blit(player.player_standL, (player.x, player.y))
+        else :
+            screen.blit(player.player_standR, (player.x, player.y))
+    
+    bulldog.draw(screen)
+    pg.display.update()
+
 
 def Menu():
     window = tk.Tk()

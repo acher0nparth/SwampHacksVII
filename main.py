@@ -9,25 +9,34 @@ screen_width = 1280
 screen_height = 720
 screen = pg.display.set_mode([screen_width, screen_height])
 
-walkLeft = [pg.image.load('gator_sprite1.png').convert_alpha(), pg.image.load('gator_sprite2.png').convert_alpha(), pg.image.load('gator_sprite1.png').convert_alpha(), pg.image.load('gator_sprite2.png').convert_alpha(), pg.image.load('gator_sprite1.png').convert_alpha(), pg.image.load('gator_sprite2.png').convert_alpha()]
-walkRight = [pg.image.load('gator_sprite1.png').convert_alpha(), pg.image.load('gator_sprite2.png').convert_alpha(), pg.image.load('gator_sprite1.png').convert_alpha(), pg.image.load('gator_sprite2.png').convert_alpha(), pg.image.load('gator_sprite1.png').convert_alpha(), pg.image.load('gator_sprite2.png').convert_alpha()]
+
 
 background = pg.image.load('background.png')
 
 clock = pg.time.Clock()
 player = characters.Gator()
-bulldog = characters.enemy()
+bulldog = characters.Bulldog()
+knight = characters.Knight()
 
 def redrawGameWindow() :
     screen.blit(background, (0,0))
+    screen.blit(bulldog.surf, bulldog.rect)
+    screen.blit(knight.surf, knight.rect)
+
     if player.walkCount + 1 >= 59 :
         player.walkCount = 0
     if player.left :
-        screen.blit(walkLeft[player.walkCount//6], (player.x,player.y))
+        screen.blit(player.walkLeft[player.walkCount//10], (player.x, player.y))
         player.walkCount += 1
-    
-    screen.blit(player.surf, player.rect)
-    screen.blit(bulldog.surf, bulldog.rect)
+    elif player.right :
+        screen.blit(player.walkRight[player.walkCount//10], (player.x, player.y))
+        player.walkCount += 1
+    else :
+        if player.wasLeft :
+            screen.blit(player.player_standL, (player.x, player.y))
+        else :
+            screen.blit(player.player_standR, (player.x, player.y))
+        
     pg.display.update()
 
 
@@ -47,11 +56,10 @@ while running:
     
     pressed_keys = pg.key.get_pressed()
     player.update(pressed_keys)
-    screen.fill((255, 255, 255))
-    pg.draw.rect(screen, (255, 0, 0), (player.x, player.y, player.width, player.height))
-    pg.display.flip()
-    # redrawGameWindow()
+    # screen.fill((255, 255, 255))
+    # pg.draw.rect(screen, (255, 0, 0), (player.x, player.y, player.width, player.height))
+    # pg.display.flip()
+    redrawGameWindow()
     clock.tick(60)
 
-# Done! Time to quit.
 pg.quit()

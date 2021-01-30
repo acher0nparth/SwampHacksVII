@@ -3,8 +3,8 @@ import pygame as pg
 from pygame.locals import *
 pg.init()
 
-screen_width = 1920
-screen_height = 1080
+screen_width = 1280
+screen_height = 720
 x = screen_width / 2
 y = screen_height / 2
 
@@ -12,47 +12,73 @@ screen = pg.display.set_mode([screen_width, screen_height])
 
 
 class Gator(pg.sprite.Sprite):
-    player_stand = pg.image.load('gator_sprite1.png').convert_alpha()
-    player_walk = pg.image.load('gator_sprite2.png').convert_alpha()
+    left = False
+    right = False
+    isJump = False
+    jumpCount = 10
+    x = screen_width / 2
+    y = screen_height / 2
+    walkCount = 0
+    width = 64 #CHANGE BASED ON SIZE OF SPRITE
+    height = 64 #CHANGE BASED ON SIZE OF SPRITE
+    vel = 5
+    wasLeft = False #used to assign the correct standing position 
+
+    #can change name, just set to this for now
+    player_standR = pg.image.load('gator_sprite1.png').convert_alpha()
+    player_walkR = pg.image.load('gator_sprite2.png').convert_alpha()
+    player_standL = pg.image.load('gator_LS1.png').convert_alpha()
+    player_walkL = pg.image.load('gator_LS2.png').convert_alpha()
     player_attack = pg.image.load('gator_attack.png').convert_alpha()
+
+    #used for assigning the walking animation when moving
+    walkLeft = [pg.image.load('gator_LS1.png').convert_alpha(), pg.image.load('gator_LS2.png').convert_alpha(), pg.image.load('gator_LS1.png').convert_alpha(), pg.image.load('gator_LS2.png').convert_alpha(), pg.image.load('gator_LS1.png').convert_alpha(), pg.image.load('gator_LS2.png').convert_alpha()]
+    walkRight = [pg.image.load('gator_sprite1.png').convert_alpha(), pg.image.load('gator_sprite2.png').convert_alpha(), pg.image.load('gator_sprite1.png').convert_alpha(), pg.image.load('gator_sprite2.png').convert_alpha(), pg.image.load('gator_sprite1.png').convert_alpha(), pg.image.load('gator_sprite2.png').convert_alpha()]
+
 
     def __init__(self):
         super(Gator, self).__init__()
-        self.surf = Gator.player_stand
+        self.surf = self.player_standL
         self.rect = self.surf.get_rect(
             center=(
-                random.randint(screen_height + 20, screen_width + 100),
-                random.randint(0, screen_height),
+                self.x, self.y
             )
          )
 
     def update(self, pressed_keys):
-        if pressed_keys[K_w] or pressed_keys[K_UP]:
-            self.surf = Gator.player_walk
-            self.rect.move_ip(0, -5)
-            self.surf = Gator.player_stand
-        if pressed_keys[K_DOWN] or pressed_keys[K_s]:
-            self.surf = Gator.player_walk
-            self.rect.move_ip(0, 5)
-            self.surf = Gator.player_stand
-        if pressed_keys[K_LEFT] or pressed_keys[K_a]:
-            self.surf = Gator.player_walk
-            self.rect.move_ip(-5, 0)
-            self.surf = Gator.player_stand
-        if pressed_keys[K_RIGHT] or pressed_keys[K_d]:
-            self.surf = Gator.player_walk
-            self.rect.move_ip(5, 0)
-            self.surf = Gator.player_stand
+        if (pressed_keys[K_LEFT] or pressed_keys[K_a]) and self.x > self.vel :
+            self.x -= self.vel
+            self.left = True
+            self.right = False
+        elif (pressed_keys[K_RIGHT] or pressed_keys[K_d]) and self.x < screen_width - self.width - self.vel :
+            self.x += self.vel
+            self.left = False
+            self.right = True
+        else :
+            if self.right:
+                self.wasLeft = False
+            elif self.left :
+                self.wasLeft = True
+            self.right = False
+            self.left = False
+            self.walkCount = 0
 
-        if self.rect.left < 0:
-            self.rect.left = 0
-        if self.rect.right > screen_width:
-            self.rect.right = screen_width
-        if self.rect.top <= 0 :
-            self.rect.top = 0
-        if self.rect.bottom >= screen_height:
-            self.rect.bottom = screen_height
-
+        if not (self.isJump) :
+            if pressed_keys[K_w] or pressed_keys[K_UP] :
+                self.isJump = True
+                self.right = False
+                self.left = False
+                self.walkCount = 0
+        else :
+            if self.jumpCount >= -10 :
+                neg = 1
+                if self.jumpCount < 0 :
+                    neg = -1
+                self.y -= (self.jumpCount ** 2) * 0.5 * neg
+                self.jumpCount -= 1
+            else :
+                self.isJump = False
+                self.jumpCount = 10
 
 class Bulldog(pg.sprite.Sprite):
 

@@ -45,7 +45,7 @@ def Main():
 
         screen.blit(player.surf, player.rect)
         screen.blit(knight.surf, knight.rect)
-        # Flip the display
+        #git c Flip the display
         pg.display.flip()
 
         clock.tick(60)
@@ -106,7 +106,7 @@ def Menu():
         master=buttons,
         text="Exit Main Menu",
         width = 18,
-        height = 1, 
+        height = 1,
         font=("Trebuchet MS",24)
     )
     leave.pack()

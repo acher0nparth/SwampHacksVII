@@ -162,7 +162,7 @@ def Start_Menu():
         width = 334,
         height = 50, 
         font=("Trebuchet MS",24),
-        command=lambda:multifunction(window.destroy(),Game_Loop()),
+        command=lambda:multifunction(window.destroy(),Story(),Game_Loop()),
         bg = 'white',
         fg = 'blue',
         image = images['play'],
@@ -277,6 +277,32 @@ def InGame_Menu():
 
     clickables.grid(row=1,column=0)
 
+    window.mainloop()
+
+
+def Story():
+    window = tk.Tk()
+    window.overrideredirect(1)
+    w = 334# width for the Tk root
+    h = 356 # height for the Tk root
+
+    # get screen width and height
+    ws = window.winfo_screenwidth() # width of the screen
+    hs = window.winfo_screenheight() # height of the screen
+
+    # calculate x and y coordinates for the Tk root window
+    x = (ws/2) - (w/2)
+    y = (hs/2) - (h/2)
+
+    # set the dimensions of the screen 
+    # and where it is placed
+    window.geometry('%dx%d+%d+%d' % (w, h, x, y))
+
+    window.resizable(False,False)
+    window.after(5000, lambda:window.destroy())
+    story_text = """Defend your swamp from the evil Knights and Bulldogs! Collect flex bucks and delicious oranges!"""
+    story=tk.Label(window, height = 50, width = 50, text = story_text, wraplength=250, justify=tk.CENTER)
+    story.pack(side=tk.TOP)
     window.mainloop()
 
 

@@ -5,8 +5,6 @@ import tkinter as tk
 from pygame.locals import *
 
 
-
-
 def Main():
 
     Start_Menu() 
@@ -123,41 +121,57 @@ def Start_Menu():
     window.geometry('%dx%d+%d+%d' % (w, h, x, y))
 
     window.resizable(False,False)
+
+    # create button image labels
+    images = {
+        'highscores' : tk.PhotoImage(file=r"Menu/Buttons/Leaderboard.png"),
+        'back' : tk.PhotoImage(file="Menu/Buttons/Back.png"),
+        'play' : tk.PhotoImage(file="Menu/Buttons/Play.png"),
+        'close' : tk.PhotoImage(file="Menu/Buttons/Close.png"),
+    }
     clickables = tk.Frame(master=window)
     title = tk.Label(master=window,text="Main Menu", font=("Trebuchet MS",42), bg='orange',
     fg = 'blue')
-    title.grid(row=0,column=0)
+    title.grid(row=0,column=0,sticky='')
 
     start_game = tk.Button(
         master=clickables,
-        text="Start New Game",
-        width = 18,
-        height = 1, 
+        text="   New Game",
+        width = 334,
+        height = 50, 
         font=("Trebuchet MS",24),
         command=lambda:multifunction(window.destroy(),Game_Loop()),
         bg = 'white',
-        fg = 'blue'
+        fg = 'blue',
+        image = images['play'],
+        compound=tk.LEFT
     )
-    start_game.pack()
+    start_game.pack(side = tk.TOP)
+
     disp_highscores = tk.Button(
         master=clickables,
-        text="Display Highscores",
-        width = 18,
-        height = 1, 
+        text="   Highscores",
+        width = 334,
+        height = 50, 
         font=("Trebuchet MS",24),
         bg = 'white',
-        fg = 'blue'
+        fg = 'blue',
+        image = images['highscores'],
+        compound = tk.LEFT
     )
     disp_highscores.pack()
+
     quit_game = tk.Button(
         master=clickables,
-        text="Quit to Desktop",
-        width = 18,
-        height = 1, 
+        text="   Quit Game",
+        width = 334,
+        height = 50, 
         font=("Trebuchet MS",24),
-        command=lambda: multifunction(window.destroy(), pg.quit()),
+        command=lambda: multifunction(window.destroy(),pg.quit()),
         bg = 'white',
-        fg = 'blue'
+        fg = 'blue', 
+        image=images['close'], 
+        compound = tk.LEFT,
     )
     quit_game.pack()
  
@@ -203,6 +217,7 @@ def InGame_Menu():
         fg = 'blue'
     )
     resume_game.pack()
+
     exchange = tk.Button(
         master=clickables,
         text="Exchange Flex Bucks",
@@ -213,6 +228,7 @@ def InGame_Menu():
         fg = 'blue'
     )
     exchange.pack()
+
     return_main_menu = tk.Button(
         master=clickables,
         text="Quit to Main Menu",
@@ -224,6 +240,7 @@ def InGame_Menu():
         fg = 'blue'
     )
     return_main_menu.pack()
+
     quit_game = tk.Button(
         master=clickables,
         text="Quit to Desktop",

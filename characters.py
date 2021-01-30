@@ -17,7 +17,7 @@ class Gator(pg.sprite.Sprite):
     isJump = False
     jumpCount = 10
     x = screen_width / 2
-    y = screen_height / 2
+    y = 538 #hard coded
     walkCount = 0
     width = 64 #CHANGE BASED ON SIZE OF SPRITE
     height = 64 #CHANGE BASED ON SIZE OF SPRITE
@@ -134,10 +134,6 @@ class Bulldog(pg.sprite.Sprite):
             else:
                 self.vel = self.vel * -1
                 self.walk_count = 0
-
-    
-
-
 
 class Knight(pg.sprite.Sprite):
     width = 64 #CHANGE BASED ON SIZE OF SPRITE

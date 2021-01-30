@@ -1,4 +1,5 @@
 import characters
+import terrain
 import random
 import pygame as pg
 import tkinter as tk
@@ -16,6 +17,12 @@ def Game_Loop():
     'bulldog' : characters.Bulldog(100, 360, 1340), 
     'knight' : characters.Knight(100, 450, 1180)
     }
+
+    terr = {
+        'grass' : terrain.Grass(),
+        'dirt' : terrain.Dirt()
+    }
+
 
     screen_width = 1440
     screen_height = 720
@@ -44,8 +51,7 @@ def Game_Loop():
         
         pressed_keys = pg.key.get_pressed()
         chars['player'].update(pressed_keys)
-        redrawGameWindow(screen, background, chars, background_x)
-        print(background_x)
+        redrawGameWindow(screen, background, chars, terr, background_x)
 
         clock.tick(60)
 
@@ -53,7 +59,7 @@ def Game_Loop():
     pg.quit()
 
 
-def redrawGameWindow(screen, background, chars, background_x) :
+def redrawGameWindow(screen, background, chars, terr, background_x) :
     relative_background_x = background_x[0] % background.get_rect().width
     screen_width = background.get_rect().width
 
@@ -61,8 +67,6 @@ def redrawGameWindow(screen, background, chars, background_x) :
 
     if relative_background_x < screen_width :
         screen.blit(background, (relative_background_x, 0))
-
-    screen.blit(chars['knight'].surf, chars['knight'].rect)
 
     if chars['player'].walkCount + 1 >= 59 :
         chars['player'].walkCount = 0
@@ -74,7 +78,6 @@ def redrawGameWindow(screen, background, chars, background_x) :
         chars['player'].walkCount += 1
         if chars['player'].x >= screen_width * 4 / 5 - chars['player'].width * 3 - chars['player'].vel :
             background_x[0] -= 5
-            print("hi")
     else :
         if chars['player'].wasLeft :
             screen.blit(chars['player'].player_standL, (chars['player'].x, chars['player'].y))
@@ -83,7 +86,11 @@ def redrawGameWindow(screen, background, chars, background_x) :
     
     chars['bulldog'].draw(screen)
     chars['knight'].draw(screen)
-
+    for y in range(24, 18, -1) :
+        for x in range(33) :
+            terr['dirt'].draw(screen, x * terr['dirt'].width, y * terr['dirt'].height)
+    for x in range (33) :
+        terr['grass'].draw(screen, x * terr['grass'].width, 570) #take screen_height and - dirt layers
     pg.display.update()
 
 

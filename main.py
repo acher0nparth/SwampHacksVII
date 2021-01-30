@@ -12,16 +12,15 @@ def Main():
     Menu()
     Game_Loop() 
 
-
 def Game_Loop():
 
     chars = {
     'player' : characters.Gator(),
-    'bulldog' : characters.Bulldog(100, 360, 1180), 
-    'knight' : characters.Knight()
+    'bulldog' : characters.Bulldog(100, 360, 1340), 
+    'knight' : characters.Knight(100, 450, 1180)
     }
 
-    screen_width = 1280
+    screen_width = 1440
     screen_height = 720
 
     screen = pg.display.set_mode([screen_width, screen_height])
@@ -58,8 +57,6 @@ def Game_Loop():
 
 def redrawGameWindow(screen, background, chars) :
     screen.blit(background, (0,0))
-    #screen.blit(bulldog.surf, bulldog.rect)
-    screen.blit(chars['knight'].surf, chars['knight'].rect)
 
     if chars['player'].walkCount + 1 >= 59 :
         chars['player'].walkCount = 0
@@ -76,6 +73,7 @@ def redrawGameWindow(screen, background, chars) :
             screen.blit(chars['player'].player_standR, (chars['player'].x, chars['player'].y))
     
     chars['bulldog'].draw(screen)
+    chars['knight'].draw(screen)
 
     pg.display.update()
 

@@ -192,6 +192,20 @@ class Knight(pg.sprite.Sprite):
                 self.walk_count = 0
 
 
+class Haduken(pg.sprite.Sprite):
+
+    width = 55
+    haduken = pg.image.load('haduken.png').convert_alpha()
+    hadukenL = pg.image.load('hadukenL.png').convert_alpha()
+
+    def __init__(self, x, y, facing):
+        self.x = x
+        self.y = y
+        self.facing = facing
+        self.vel = 8 * facing
+
+    def draw(screen):
+        screen.blit(self.haduken, (self.x, self.y))
 
 class Items(pg.sprite.Sprite):
 

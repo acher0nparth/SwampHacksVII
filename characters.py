@@ -2,33 +2,15 @@ import random
 import pygame as pg
 from pygame.locals import *
 
-
-screen_width = 1280
+screen_width = 1440
 screen_height = 720
-x = screen_width / 2
-y = screen_height / 2
 
 screen = pg.display.set_mode([screen_width, screen_height])
 
-
 class Gator(pg.sprite.Sprite):
-    left = False
-    right = False
-    isJump = False
-    jumpCount = 10
-    x = screen_width / 2
-    y = screen_height / 2
-    walkCount = 0
-    width = 64 #CHANGE BASED ON SIZE OF SPRITE
-    height = 64 #CHANGE BASED ON SIZE OF SPRITE
-    vel = 5
-    wasLeft = False #used to assign the correct standing position 
-
     #can change name, just set to this for now
     player_standR = pg.image.load('gator_sprite1.png').convert_alpha()
-    player_walkR = pg.image.load('gator_sprite2.png').convert_alpha()
     player_standL = pg.image.load('gator_LS1.png').convert_alpha()
-    player_walkL = pg.image.load('gator_LS2.png').convert_alpha()
     haduken = pg.image.load('haduken.png').convert_alpha()
     hadukenL = pg.image.load('hadukenL.png').convert_alpha()
 
@@ -39,13 +21,18 @@ class Gator(pg.sprite.Sprite):
 
     def __init__(self):
         super(Gator, self).__init__()
-        self.surf = self.player_standL
+        self.left = False
+        self.right = False
+        self.isJump = False
+        self.wasLeft = False
+        self.jumpCount = 10
+        self.walkCount = 0
+        self.width = 64 #CHANGE BASED ON SIZE OF SPRITE
+        self.height = 64
+        self.vel = 5
+        self.x = screen_width / 2
+        self.y = 538 #hard coded and dependent upon the resolution
         self.hitbox = (self.x + 20, self.y, 24, 48)
-        self.rect = self.surf.get_rect(
-            center=(
-                self.x, self.y
-            )
-         )
 
     def update(self, pressed_keys):
         if (pressed_keys[K_LEFT] or pressed_keys[K_a]) and self.x > self.vel :
@@ -53,7 +40,7 @@ class Gator(pg.sprite.Sprite):
             self.left = True
             self.right = False
         elif (pressed_keys[K_RIGHT] or pressed_keys[K_d]) :
-            if self.x < screen_width * 2 / 3 - self.width - self.vel :
+            if self.x < screen_width * 4 / 5 - self.width - self.vel :
                 self.x += self.vel
             self.left = False
             self.right = True
@@ -134,10 +121,6 @@ class Bulldog(pg.sprite.Sprite):
             else:
                 self.vel = self.vel * -1
                 self.walk_count = 0
-
-    
-
-
 
 class Knight(pg.sprite.Sprite):
     width = 64 #CHANGE BASED ON SIZE OF SPRITE

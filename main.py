@@ -1,11 +1,9 @@
 import characters
+import terrain
 import random
 import pygame as pg
 import tkinter as tk
 from pygame.locals import *
-
-
-
 
 def Main():
 
@@ -18,13 +16,19 @@ def Game_Loop():
     'bulldog' : characters.Bulldog(100, 360, 1340), 
     'knight' : characters.Knight(100, 450, 1180)
     }
-    haduk = []
+
+    terr = {
+        'grass' : terrain.Grass(),
+        'dirt' : terrain.Dirt(),
+        'platform_br' : terrain.Platform(1000, 400)
+    }
 
     screen_width = 1440
     screen_height = 720
 
     screen = pg.display.set_mode([screen_width, screen_height])
     background = pg.image.load('background.png')
+    background_x = [0]
 
     clock = pg.time.Clock()
 
@@ -32,7 +36,6 @@ def Game_Loop():
     # Run until the user asks to quit
     running = True
     while running:
-
         #get every event in the queue
         for event in pg.event.get():
             if event.type == KEYDOWN :
@@ -45,31 +48,9 @@ def Game_Loop():
             if event.type == QUIT:
                 running = False
         
-        for had in haduk:
-            if had.x < 1440 and had.x > 0:
-                had.x = had.x + had.vel
-            else:
-                haduk.pop(haduk.index(had))
-
         pressed_keys = pg.key.get_pressed()
         chars['player'].update(pressed_keys)
-
-        if pressed_keys[K_SPACE]:
-            if chars['player'].left:
-                facing = -1
-            elif chars['player'].right:
-                facing = 1
-            else:
-                if chars['player'].wasLeft:
-                    facing = -1
-                else:
-                    facing = 1
-
-            if len(haduk) < 3:
-                #haduk.append(characters.Haduken(round((chars['player'].x + chars['player'].width)//2), round((chars['player'].y + chars['player'].height)//2), facing))
-                haduk.append(characters.Haduken(chars['player'].x, chars['player'].y, facing))
-
-        redrawGameWindow(screen, background, chars, haduk)
+        redrawGameWindow(screen, background, chars, terr, background_x)
 
         clock.tick(60)
 
@@ -77,8 +58,14 @@ def Game_Loop():
     pg.quit()
 
 
-def redrawGameWindow(screen, background, chars, haduk):
-    screen.blit(background, (0,0))
+def redrawGameWindow(screen, background, chars, terr, background_x) :
+    relative_background_x = background_x[0] % background.get_rect().width
+    screen_width = background.get_rect().width
+
+    screen.blit(background, (relative_background_x - screen_width,0))
+
+    if relative_background_x < screen_width :
+        screen.blit(background, (relative_background_x, 0))
 
     if chars['player'].walkCount + 1 >= 59 :
         chars['player'].walkCount = 0
@@ -88,17 +75,23 @@ def redrawGameWindow(screen, background, chars, haduk):
     elif chars['player'].right :
         screen.blit(chars['player'].walkRight[chars['player'].walkCount//10], (chars['player'].x, chars['player'].y))
         chars['player'].walkCount += 1
+        if chars['player'].x >= screen_width * 4 / 5 - chars['player'].width * 3 - chars['player'].vel :
+            background_x[0] -= 5
     else :
         if chars['player'].wasLeft :
             screen.blit(chars['player'].player_standL, (chars['player'].x, chars['player'].y))
         else :
             screen.blit(chars['player'].player_standR, (chars['player'].x, chars['player'].y))
     
-    for had in haduk:
-        had.draw(screen)
     chars['bulldog'].draw(screen)
     chars['knight'].draw(screen)
-
+    for y in range(24, 18, -1) :
+        for x in range(33) :
+            terr['dirt'].draw(screen, x * terr['dirt'].width, y * terr['dirt'].height)
+    for x in range (33) :
+        terr['grass'].draw(screen, x * terr['grass'].width, 570) #take screen_height and - dirt layers
+    
+    terr['platform_br'].draw(screen)
     pg.display.update()
 
 

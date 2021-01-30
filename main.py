@@ -6,11 +6,12 @@ from pygame.locals import *
 
 
 
-screen_width = 1280
+screen_width = 1440
 screen_height = 720
 
 screen = pg.display.set_mode([screen_width, screen_height])
 background = pg.image.load('background.png')
+background_x = 0
 
 clock = pg.time.Clock()
 
@@ -19,8 +20,13 @@ bulldog = characters.Bulldog(100, 360, 1180)
 knight = characters.Knight()
 
 def redrawGameWindow() :
-    screen.blit(background, (0,0))
-    #screen.blit(bulldog.surf, bulldog.rect)
+    global background_x
+    global rel_bg_x
+    rel_bg_x = background_x % background.get_rect().width
+
+    screen.blit(background, (rel_bg_x - background.get_rect().width, 0))
+    if rel_bg_x < screen_width :
+        screen.blit(background, (rel_bg_x, 0))
     screen.blit(knight.surf, knight.rect)
 
     if player.walkCount + 1 >= 59 :
@@ -31,6 +37,8 @@ def redrawGameWindow() :
     elif player.right :
         screen.blit(player.walkRight[player.walkCount//10], (player.x, player.y))
         player.walkCount += 1
+        if player.x > screen_width / 3 :
+            background_x -= 5
     else :
         if player.wasLeft :
             screen.blit(player.player_standL, (player.x, player.y))
@@ -38,13 +46,11 @@ def redrawGameWindow() :
             screen.blit(player.player_standR, (player.x, player.y))
     
     bulldog.draw(screen)
-
     pg.display.update()
 
 def Main():
 
     pg.init()
-
     # Run until the user asks to quit
     running = True
     while running:

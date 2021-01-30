@@ -5,7 +5,7 @@ from pygame.locals import *
 screen_width = 1440
 screen_height = 720
 
-screen = pg.display.set_mode([screen_width, screen_height])
+screen = pg.display.set_mode([334, 286],pg.NOFRAME)
 
 class Gator(pg.sprite.Sprite):
     #can change name, just set to this for now

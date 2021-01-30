@@ -28,7 +28,7 @@ def Game_Loop():
     screen_width = 1440
     screen_height = 720
 
-    screen = pg.display.set_mode([screen_width, screen_height])
+    screen = pg.display.set_mode([screen_width, screen_height], pg.NOFRAME)
     background = pg.image.load('background.png')
     background_x = [0]
 

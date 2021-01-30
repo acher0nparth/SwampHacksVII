@@ -16,7 +16,7 @@ clock = pg.time.Clock()
 # class Enemy(pg.sprite.Sprite)
 
 player = characters.Gator()
-bulldog = characters.enemy()
+knight = characters.Knight()
 # Run until the user asks to quit
 running = True
 while running:
@@ -38,7 +38,7 @@ while running:
     screen.fill((2, 255, 25))
 
     screen.blit(player.surf, player.rect)
-    screen.blit(bulldog.surf, bulldog.rect)
+    screen.blit(knight.surf, knight.rect)
     # Flip the display
     pg.display.flip()
 

@@ -3,15 +3,7 @@ import random
 # Import and initialize the pygame library
 import pygame as pg
 from pygame.locals import *
-from pygame.locals import (
-    K_UP,
-    K_DOWN,
-    K_LEFT,
-    K_RIGHT,
-    K_ESCAPE,
-    KEYDOWN,
-    QUIT,
-)
+
 
 pg.init()
 
@@ -24,46 +16,60 @@ IMAGE = pg.image.load('gator_sprite1.png').convert_alpha()
 
 class Gator(pg.sprite.Sprite):
     def __init__(self):
-        print("YES")
+        #print("YES")
         super(Gator, self).__init__()
-        # self.image = IMAGE
         self.surf = IMAGE
+        #self.surf.set_colorkey((255, 255, 255), RLEACCEL)
         self.rect = self.surf.get_rect(
             center=(
-                random.randint(SCREEN_WIDTH + 20, SCREEN_WIDTH + 100),
+                random.randint(250, 250),
                 random.randint(0, SCREEN_HEIGHT),
             )
-        )
+         )
+        self.speed = random.randint(5, 20)
 
-    def update(self):
-        #print("accessed")
-        #self.rect.move_ip(-5, 0)
-        if pressed_keys[K_UP]:
-            self.rect.move_ip(0, -5)
-        if pressed_keys[K_DOWN]:
-            self.rect.move_ip(0, 5)
-        if pressed_keys[K_LEFT]:
-            self.rect.move_ip(-5, 0)
-        if pressed_keys[K_RIGHT]:
-            self.rect.move_ip(5, 0)
+    def update(self, pressed_keys):
+        if pressed_keys[K_UP] or pressed_keys[K_w]:
+            self.rect.move_ip(0, -1)
+        if pressed_keys[K_DOWN] or pressed_keys[K_s]:
+            self.rect.move_ip(0, 1)
+        if pressed_keys[K_LEFT] or pressed_keys[K_a]:
+            self.rect.move_ip(-1, 0)
+        if pressed_keys[K_RIGHT] or pressed_keys[K_d]:
+            self.rect.move_ip(1, 0)
+            # Keep player on the screen
+        if self.rect.left < 0:
+            self.rect.left = 0
+        if self.rect.right > SCREEN_WIDTH:
+            self.rect.right = SCREEN_WIDTH
+        if self.rect.top <= 0:
+            self.rect.top = 0
+        if self.rect.bottom >= SCREEN_HEIGHT:
+            self.rect.bottom = SCREEN_HEIGHT
 
 gator = Gator()
 # Run until the user asks to quit
 running = True
 while running:
 
-    # Did the user click the window close button?
     for event in pg.event.get():
-        if event.type == pg.QUIT:
+        # Did the user hit a key?
+        if event.type == KEYDOWN:
+            # Was it the Escape key? If so, stop the loop.
+            if event.key == K_ESCAPE:
+                running = False
+
+        # Did the user click the window close button? If so, stop the loop.
+        elif event.type == QUIT:
             running = False
     
     pressed_keys = pg.key.get_pressed()
-    gator.update()
+    gator.update(pressed_keys)
     #  print(pressed_keys)
-    # Fill the background with white
+
     screen.fill((0, 0, 0))
 
-    screen.blit(gator.surf, (SCREEN_WIDTH/2, SCREEN_HEIGHT/2))
+    screen.blit(gator.surf, gator.rect)
     # Flip the display
     pg.display.flip()
 

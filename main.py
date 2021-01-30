@@ -7,8 +7,8 @@ from pygame.locals import *
 
 pg.init()
 
-SCREEN_WIDTH = 600
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1920
+SCREEN_HEIGHT = 1080
 
 screen = pg.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
 

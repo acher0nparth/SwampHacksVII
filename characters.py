@@ -3,8 +3,8 @@ import pygame as pg
 from pygame.locals import *
 pg.init()
 
-screen_width = 1280
-screen_height = 720
+screen_width = 1920
+screen_height = 1080
 x = screen_width / 2
 y = screen_height / 2
 

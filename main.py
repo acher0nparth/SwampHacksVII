@@ -20,9 +20,8 @@ def Game_Loop():
     terr = {
         'grass' : terrain.Grass(),
         'dirt' : terrain.Dirt(),
-        # 'platform_br' : terrain.Platform()
+        'platform_br' : terrain.Platform(1000, 400)
     }
-
 
     screen_width = 1440
     screen_height = 720
@@ -91,6 +90,8 @@ def redrawGameWindow(screen, background, chars, terr, background_x) :
             terr['dirt'].draw(screen, x * terr['dirt'].width, y * terr['dirt'].height)
     for x in range (33) :
         terr['grass'].draw(screen, x * terr['grass'].width, 570) #take screen_height and - dirt layers
+    
+    terr['platform_br'].draw(screen)
     pg.display.update()
 
 

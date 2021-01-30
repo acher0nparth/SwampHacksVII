@@ -1,7 +1,6 @@
 import random
 import pygame as pg
 from pygame.locals import *
-pg.init()
 
 screen_width = 1440
 screen_height = 720

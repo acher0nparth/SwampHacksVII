@@ -2,8 +2,6 @@ import random
 import pygame as pg
 from pygame.locals import *
 
-pg.init()
-
 class Grass(pg.sprite.Sprite) :
     def __init__(self) :
         self.width = 44
@@ -22,15 +20,16 @@ class Dirt(pg.sprite.Sprite) :
     def draw(self, screen, x, y) :
         screen.blit(self.texture, (x,y))
 
-# class Platform(pg.sprite.Sprite) :
-#     def __init__(self, x, y) :
-#         self.width = 32
-#         self.height = 8
-#         self.x = x
-#         self.y = y
-#         self.hitbox = (x, y, self.width, self.height)
-#         self.texture = pg.image.load('brown_platform.png')
+class Platform(pg.sprite.Sprite) :
+    def __init__(self, x, y) :
+        self.width = 32
+        self.height = 8
+        self.x = x
+        self.y = y
+        self.hitbox = (x, y, self.width, self.height)
+        self.texture = pg.image.load('brown_platform.png')
 
-#         def draw(self, screen) :
-#             self.hitbox = ()
-#             screen.blit(self.texture, (self.x, self.y))
+    def draw(self, screen) :
+        self.hitbox = (self.x, self.y, self.width, self.height)
+        screen.blit(self.texture, (self.x, self.y))
+        pg.draw.rect(screen, (255,0 ,0), self.hitbox, 2)

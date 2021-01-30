@@ -41,7 +41,7 @@ class Gator(pg.sprite.Sprite):
             Gator.x += Gator.vel
 
         if not (Gator.isJump) :
-            if pressed_keys[K_SPACE] :
+            if pressed_keys[K_w] or pressed_keys[K_UP] :
                 Gator.isJump = True
         else :
             if Gator.jumpCount >= -10 :

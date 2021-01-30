@@ -1,7 +1,7 @@
 import random
 import pygame as pg
 from pygame.locals import *
-pg.init()
+
 
 screen_width = 1280
 screen_height = 720
@@ -193,8 +193,9 @@ class Knight(pg.sprite.Sprite):
 
 
 class Haduken(pg.sprite.Sprite):
-
+    vel = 8
     width = 55
+    height = 45
     haduken = pg.image.load('haduken.png').convert_alpha()
     hadukenL = pg.image.load('hadukenL.png').convert_alpha()
 
@@ -204,8 +205,11 @@ class Haduken(pg.sprite.Sprite):
         self.facing = facing
         self.vel = 8 * facing
 
-    def draw(screen):
-        screen.blit(self.haduken, (self.x, self.y))
+    def draw(self, screen):
+        if self.facing == 1:
+            screen.blit(self.haduken, (self.x, self.y))
+        else: 
+            screen.blit(self.hadukenL, (self.x, self.y))            
 
 class Items(pg.sprite.Sprite):
 
@@ -213,7 +217,7 @@ class Items(pg.sprite.Sprite):
     flex_bucks = pg.image.load('flex_bucks.jpg').convert_alpha()
     def __init__(self):
         super(Items, self).__init__()
-        self.surf = Knight.knight1
+        self.surf = Items.orange
         self.rect = self.surf.get_rect(
             center=(x,y)
         )

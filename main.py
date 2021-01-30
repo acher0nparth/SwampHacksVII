@@ -6,8 +6,8 @@ from pygame.locals import *
 
 
 
-screen_width = 1920
-screen_height = 1080
+screen_width = 1280
+screen_height = 720
 
 screen = pg.display.set_mode([screen_width, screen_height])
 background = pg.image.load('background.png')
@@ -15,12 +15,12 @@ background = pg.image.load('background.png')
 clock = pg.time.Clock()
 
 player = characters.Gator()
-bulldog = characters.Bulldog()
+bulldog = characters.Bulldog(100, 360, 1180)
 knight = characters.Knight()
 
 def redrawGameWindow() :
     screen.blit(background, (0,0))
-    screen.blit(bulldog.surf, bulldog.rect)
+    #screen.blit(bulldog.surf, bulldog.rect)
     screen.blit(knight.surf, knight.rect)
 
     if player.walkCount + 1 >= 59 :
@@ -36,7 +36,9 @@ def redrawGameWindow() :
             screen.blit(player.player_standL, (player.x, player.y))
         else :
             screen.blit(player.player_standR, (player.x, player.y))
-        
+    
+    bulldog.draw(screen)
+
     pg.display.update()
 
 def Main():

@@ -3,8 +3,8 @@ import pygame as pg
 from pygame.locals import *
 pg.init()
 
-screen_width = 1920
-screen_height = 1080
+screen_width = 1280
+screen_height = 720
 x = screen_width / 2
 y = screen_height / 2
 
@@ -39,6 +39,7 @@ class Gator(pg.sprite.Sprite):
     def __init__(self):
         super(Gator, self).__init__()
         self.surf = self.player_standL
+        self.hitbox = (self.x + 20, self.y, 24, 48)
         self.rect = self.surf.get_rect(
             center=(
                 self.x, self.y
@@ -81,22 +82,66 @@ class Gator(pg.sprite.Sprite):
                 self.jumpCount = 10
 
 class Bulldog(pg.sprite.Sprite):
+    width = 64 #CHANGE BASED ON SIZE OF SPRITE
+    height = 64 #CHANGE BASED ON SIZE OF SPRITE
+    vel = 2
 
     bulldog1 = pg.image.load('bulldog1.png').convert_alpha()
     bulldog2 = pg.image.load('bulldog2.png').convert_alpha()
     bulldog_attack = pg.image.load('bulldog_attack.png').convert_alpha()
-    def __init__(self):
+    bulldog1R = pg.image.load('bulldog1R.png').convert_alpha()
+    bulldog2R = pg.image.load('bulldog2R.png').convert_alpha()
+    bulldog_attackR = pg.image.load('bulldog_attackR.png').convert_alpha()
+
+    walkLeft = [bulldog1, bulldog1, bulldog2, bulldog2, bulldog_attack, bulldog_attack, bulldog1, bulldog1, bulldog2, bulldog2, bulldog_attack, bulldog_attack]
+    walkRight = [bulldog1R, bulldog1R, bulldog2R, bulldog2R, bulldog_attackR, bulldog_attackR, bulldog1R, bulldog1R, bulldog2R, bulldog2R, bulldog_attackR, bulldog_attackR]
+
+
+    def __init__(self, x, y, end):
         super(Bulldog, self).__init__()
+        self.x = x
+        self.y = y
         self.surf = Bulldog.bulldog1
+        self.height = Bulldog.height
+        self.width = Bulldog.width
+        self.walk_count = 0
+        self.vel = 3
+        self.path = [x, end]
         self.rect = self.surf.get_rect(
             center=(x,y)
         )
 
-    #def update(self):
+    def draw(self, screen):
+        self.move()
+        if self.walk_count + 1 >= 36:
+            self.walk_count = 0
+    
+        if self.vel > 0:
+            screen.blit(self.walkRight[self.walk_count //3], (self.x, self.y))
+            self.walk_count += 1
+        else:
+            screen.blit(self.walkLeft[self.walk_count //3], (self.x, self.y))
+            self.walk_count += 1            
+
+    def move(self):
+        if self.vel > 0:
+            if self.x  + self.vel < self.path[1]:
+                self.x += self.vel
+            else:
+                self.vel = self.vel * -1
+                self.walk_count = 0
+        else:
+            if self.x - self.vel > self.path[0]:
+                self.x += self.vel
+            else:
+                self.vel = self.vel * -1
+                self.walk_count = 0
+
+    
+
 
 
 class Knight(pg.sprite.Sprite):
-
     knight1 = pg.image.load('knight1.png').convert_alpha()
     knight2 = pg.image.load('knight2.png').convert_alpha()
     knight_attack = pg.image.load('knight_attack.png').convert_alpha()

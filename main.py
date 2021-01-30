@@ -6,49 +6,30 @@ from pygame.locals import *
 
 
 
-screen_width = 1280
-screen_height = 720
-
-screen = pg.display.set_mode([screen_width, screen_height])
-background = pg.image.load('background.png')
-
-clock = pg.time.Clock()
-
-player = characters.Gator()
-bulldog = characters.Bulldog(100, 360, 1180)
-knight = characters.Knight(100, 450, 1180)
-
-def redrawGameWindow() :
-    screen.blit(background, (0,0))
-
-    if player.walkCount + 1 >= 59 :
-        player.walkCount = 0
-    if player.left :
-        screen.blit(player.walkLeft[player.walkCount//10], (player.x, player.y))
-        player.walkCount += 1
-    elif player.right :
-        screen.blit(player.walkRight[player.walkCount//10], (player.x, player.y))
-        player.walkCount += 1
-    else :
-        if player.wasLeft :
-            screen.blit(player.player_standL, (player.x, player.y))
-        else :
-            screen.blit(player.player_standR, (player.x, player.y))
-    #player.draw
-
-    player.hitbox = (player.x + 20, player.y, 24, 48)
-    pg.draw.rect(screen, (255, 0, 0), player.hitbox, 2)
-    # multiplier = 2
-    # bulldog.vel = bulldog.vel * multiplier
-    bulldog.draw(screen)
-    knight.draw(screen)
-
-    pg.display.update()
 
 def Main():
 
-    pg.init()
+    Menu()
+    Game_Loop() 
 
+
+def Game_Loop():
+
+    chars = {
+    'player' : characters.Gator(),
+    'bulldog' : characters.Bulldog(100, 360, 1180), 
+    'knight' : characters.Knight()
+    }
+
+    screen_width = 1280
+    screen_height = 720
+
+    screen = pg.display.set_mode([screen_width, screen_height])
+    background = pg.image.load('background.png')
+
+    clock = pg.time.Clock()
+
+    pg.init()
     # Run until the user asks to quit
     running = True
     while running:
@@ -66,13 +47,38 @@ def Main():
                 running = False
         
         pressed_keys = pg.key.get_pressed()
-        player.update(pressed_keys)
-        redrawGameWindow()
+        chars['player'].update(pressed_keys)
+        redrawGameWindow(screen, background, chars)
 
         clock.tick(60)
 
     # Done! Time to quit.
     pg.quit()
+
+
+def redrawGameWindow(screen, background, chars) :
+    screen.blit(background, (0,0))
+    #screen.blit(bulldog.surf, bulldog.rect)
+    screen.blit(chars['knight'].surf, chars['knight'].rect)
+
+    if chars['player'].walkCount + 1 >= 59 :
+        chars['player'].walkCount = 0
+    if chars['player'].left :
+        screen.blit(chars['player'].walkLeft[chars['player'].walkCount//10], (chars['player'].x, chars['player'].y))
+        chars['player'].walkCount += 1
+    elif chars['player'].right :
+        screen.blit(chars['player'].walkRight[chars['player'].walkCount//10], (chars['player'].x, chars['player'].y))
+        chars['player'].walkCount += 1
+    else :
+        if chars['player'].wasLeft :
+            screen.blit(chars['player'].player_standL, (chars['player'].x, chars['player'].y))
+        else :
+            screen.blit(chars['player'].player_standR, (chars['player'].x, chars['player'].y))
+    
+    chars['bulldog'].draw(screen)
+
+    pg.display.update()
+
 
 def Menu():
     window = tk.Tk()
@@ -93,21 +99,21 @@ def Menu():
     window.geometry('%dx%d+%d+%d' % (w, h, x, y))
 
     window.resizable(False,False)
-    buttons = tk.Frame(master=window)
+    clickables = tk.Frame(master=window)
     title = tk.Label(master=window,text="Main Menu", font=("Trebuchet MS",42))
     title.grid(row=0,column=0)
 
     start_game = tk.Button(
-        master=buttons,
+        master=clickables,
         text="Start New Game",
         width = 18,
         height = 1, 
         font=("Trebuchet MS",24),
-        command=lambda : Start(window)
+        command=lambda:multifunction(window.destroy(), Game_Loop())
     )
     start_game.pack()
     disp_highscores = tk.Button(
-        master=buttons,
+        master=clickables,
         text="Display Highscores",
         width = 18,
         height = 1, 
@@ -115,28 +121,36 @@ def Menu():
     )
     disp_highscores.pack()
     exchange = tk.Button(
-        master=buttons,
+        master=clickables,
         text="Exchange Flex Bucks",
         width = 18,
         height = 1, 
         font=("Trebuchet MS",24)
     )
     exchange.pack()
-    leave = tk.Button(
-        master=buttons,
-        text="Exit Main Menu",
+    resume = tk.Button(
+        master=clickables,
+        text="Resume Game",
         width = 18,
         height = 1,
-        font=("Trebuchet MS",24)
+        font=("Trebuchet MS",24),
+        command=lambda:Resume_Game(window)
     )
-    leave.pack()
+    resume.pack()
 
-    buttons.grid(row=1,column=0)
+    clickables.grid(row=1,column=0)
 
     window.mainloop()
     
-def Start(menu_window):
-    menu_window.destroy()
-    Main()
 
-Menu()
+def Resume_Game(menu_window):
+    menu_window.destroy()
+
+
+def multifunction(*args):
+    for function in args:
+        function()
+
+
+Main()
+

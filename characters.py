@@ -1,24 +1,19 @@
-import characters
 import random
 import pygame as pg
 from pygame.locals import *
-
 pg.init()
 
-<<<<<<< HEAD
-screen_width = 800
-screen_height = 600
+screen_width = 1920
+screen_height = 1080
 
 screen = pg.display.set_mode([screen_width, screen_height])
 
 player_stand = pg.image.load('gator_sprite1.png').convert_alpha()
 player_walk = pg.image.load('gator_sprite2.png').convert_alpha()
-
-clock = pg.time.Clock()
-
-# class Enemy(pg.sprite.Sprite)
+bulldog1 = pg.image.load('bulldog1.png').convert_alpha()
 
 class Gator(pg.sprite.Sprite):
+
     def __init__(self):
         super(Gator, self).__init__()
         self.surf = player_stand
@@ -28,9 +23,8 @@ class Gator(pg.sprite.Sprite):
                 random.randint(0, screen_height),
             )
          )
-        self.speed = random.randint(5, 20)
 
-    def update(self):
+    def update(self, pressed_keys):
         if pressed_keys[K_w] or pressed_keys[K_UP]:
             self.surf = player_walk
             self.rect.move_ip(0, -5)
@@ -57,57 +51,15 @@ class Gator(pg.sprite.Sprite):
         if self.rect.bottom >= screen_height:
             self.rect.bottom = screen_height
 
-player = Gator()
-=======
-screen_width = 1920
-screen_height = 1080
 
-screen = pg.display.set_mode([screen_width, screen_height])
+class enemy(pg.sprite.Sprite):
 
-
-clock = pg.time.Clock()
-
-# class Enemy(pg.sprite.Sprite)
-
-player = characters.Gator()
-bulldog = characters.enemy()
->>>>>>> ethan
-# Run until the user asks to quit
-running = True
-while running:
-
-    #get every event in the queue
-    for event in pg.event.get():
-        if event.type == KEYDOWN :
-            if event.key == K_ESCAPE :
-                running = False
-
-        # Did the user click the window close button? If so, stop the loop.
-        if event.type == QUIT:
-            running = False
-    
-    pressed_keys = pg.key.get_pressed()
-<<<<<<< HEAD
-    player.update()
-    
-    # Fill the background with white
-    screen.fill((255, 255, 255))
-
-    screen.blit(player.surf, player.rect)
-
-=======
-    player.update(pressed_keys)
-    
-    # Fill the background with white
-    screen.fill((2, 255, 25))
-
-    screen.blit(player.surf, player.rect)
-    screen.blit(bulldog.surf, bulldog.rect)
->>>>>>> ethan
-    # Flip the display
-    pg.display.flip()
-
-    clock.tick(60)
-
-# Done! Time to quit.
-pg.quit()
+    def __init__(self):
+        super(enemy, self).__init__()
+        self.surf = bulldog1
+        self.rect = self.surf.get_rect(
+            center=(
+                random.randint(screen_height + 20, screen_width + 100),
+                random.randint(0, screen_height),
+            )
+         )

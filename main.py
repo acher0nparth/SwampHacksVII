@@ -14,6 +14,7 @@ def Main():
 
     screen = pg.display.set_mode([screen_width, screen_height])
 
+<<<<<<< HEAD
 
     clock = pg.time.Clock()
 

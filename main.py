@@ -20,7 +20,8 @@ def Game_Loop():
 
     terr = {
         'grass' : terrain.Grass(),
-        'dirt' : terrain.Dirt()
+        'dirt' : terrain.Dirt(),
+        'platform_br' : terrain.Platform()
     }
 
 
@@ -92,7 +93,6 @@ def redrawGameWindow(screen, background, chars, terr, background_x) :
     for x in range (33) :
         terr['grass'].draw(screen, x * terr['grass'].width, 570) #take screen_height and - dirt layers
     pg.display.update()
-
 
 def Menu():
     window = tk.Tk()

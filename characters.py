@@ -41,7 +41,7 @@ class Gator(pg.sprite.Sprite):
         self.surf = self.player_standL
         self.rect = self.surf.get_rect(
             center=(
-                Gator.x, Gator.y
+                self.x, self.y
             )
          )
 

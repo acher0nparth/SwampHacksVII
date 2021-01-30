@@ -16,12 +16,12 @@ clock = pg.time.Clock()
 
 player = characters.Gator()
 bulldog = characters.Bulldog(100, 360, 1180)
-knight = characters.Knight()
+knight = characters.Knight(100, 450, 1180)
 
 def redrawGameWindow() :
     screen.blit(background, (0,0))
     #screen.blit(bulldog.surf, bulldog.rect)
-    screen.blit(knight.surf, knight.rect)
+    #screen.blit(knight.surf, knight.rect)
 
     if player.walkCount + 1 >= 59 :
         player.walkCount = 0
@@ -36,8 +36,11 @@ def redrawGameWindow() :
             screen.blit(player.player_standL, (player.x, player.y))
         else :
             screen.blit(player.player_standR, (player.x, player.y))
+    player.hitbox = (player.x + 20, player.y, 24, 48)
+    pg.draw.rect(screen, (255, 0, 0), player.hitbox, 2)
     
     bulldog.draw(screen)
+    knight.draw(screen)
 
     pg.display.update()
 

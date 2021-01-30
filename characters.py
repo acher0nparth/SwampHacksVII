@@ -101,15 +101,11 @@ class Bulldog(pg.sprite.Sprite):
         super(Bulldog, self).__init__()
         self.x = x
         self.y = y
-        self.surf = Bulldog.bulldog1
         self.height = Bulldog.height
         self.width = Bulldog.width
         self.walk_count = 0
         self.vel = 3
         self.path = [x, end]
-        self.rect = self.surf.get_rect(
-            center=(x,y)
-        )
 
     def draw(self, screen):
         self.move()
@@ -117,10 +113,10 @@ class Bulldog(pg.sprite.Sprite):
             self.walk_count = 0
     
         if self.vel > 0:
-            screen.blit(self.walkRight[self.walk_count //3], (self.x, self.y))
+            screen.blit(self.walkRight[self.walk_count//3], (self.x, self.y))
             self.walk_count += 1
         else:
-            screen.blit(self.walkLeft[self.walk_count //3], (self.x, self.y))
+            screen.blit(self.walkLeft[self.walk_count//3], (self.x, self.y))
             self.walk_count += 1            
 
     def move(self):
@@ -142,17 +138,56 @@ class Bulldog(pg.sprite.Sprite):
 
 
 class Knight(pg.sprite.Sprite):
+    width = 64 #CHANGE BASED ON SIZE OF SPRITE
+    height = 64 #CHANGE BASED ON SIZE OF SPRITE
+    vel = 3
+
     knight1 = pg.image.load('knight1.png').convert_alpha()
     knight2 = pg.image.load('knight2.png').convert_alpha()
     knight_attack = pg.image.load('knight_attack.png').convert_alpha()
-    def __init__(self):
-        super(Knight, self).__init__()
-        self.surf = Knight.knight1
-        self.rect = self.surf.get_rect(
-            center=(x,y)
-        )
+    knight1L = pg.image.load('knight1L.png').convert_alpha()
+    knight2L = pg.image.load('knight2L.png').convert_alpha()
+    knight_attackL = pg.image.load('knight_attackL.png').convert_alpha()
 
-    #def update(self):
+    walkLeft = [knight1L, knight1L, knight2L, knight2L, knight_attackL, knight_attackL,  knight_attackL, knight1L, knight1L, knight2L, knight2L, knight_attackL, knight_attackL, knight_attackL]
+    walkRight = [knight1, knight1, knight2, knight2, knight_attack, knight_attack, knight_attack, knight1, knight1, knight2, knight2, knight_attack, knight_attack, knight_attack]
+
+
+    def __init__(self, x, y, end):
+        super(Knight, self).__init__()
+        self.x = x
+        self.y = y
+        self.height = Knight.height
+        self.width = Knight.width
+        self.walk_count = 0
+        self.vel = 3
+        self.path = [x, end]
+
+    def draw(self, screen):
+        self.move()
+        if self.walk_count + 1 >= 39:
+            self.walk_count = 0
+    
+        if self.vel > 0:
+            screen.blit(self.walkRight[self.walk_count//3], (self.x, self.y))
+            self.walk_count += 1
+        else:
+            screen.blit(self.walkLeft[self.walk_count//3], (self.x, self.y))
+            self.walk_count += 1            
+
+    def move(self):
+        if self.vel > 0:
+            if self.x  + self.vel < self.path[1]:
+                self.x += self.vel
+            else:
+                self.vel = self.vel * -1
+                self.walk_count = 0
+        else:
+            if self.x - self.vel > self.path[0]:
+                self.x += self.vel
+            else:
+                self.vel = self.vel * -1
+                self.walk_count = 0
 
 
 

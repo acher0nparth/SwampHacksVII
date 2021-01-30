@@ -8,15 +8,15 @@ screen_height = 720
 
 screen = pg.display.set_mode([screen_width, screen_height])
 
-player_stand = pg.image.load('gator_sprite1.png').convert_alpha()
-player_walk = pg.image.load('gator_sprite2.png').convert_alpha()
-bulldog1 = pg.image.load('bulldog1.png').convert_alpha()
 
 class Gator(pg.sprite.Sprite):
     left = False
     right = False
     isJump = False
     jumpCount = 10
+    player_stand = pg.image.load('gator_sprite1.png').convert_alpha()
+    player_walk = pg.image.load('gator_sprite2.png').convert_alpha()
+    player_attack = pg.image.load('gator_attack.png').convert_alpha()
 
     x = screen_width / 2
     y = screen_height / 2
@@ -27,7 +27,7 @@ class Gator(pg.sprite.Sprite):
     
     def __init__(self):
         super(Gator, self).__init__()
-        self.surf = player_stand
+        self.surf = Gator.player_stand
         self.rect = self.surf.get_rect(
             center=(
                 Gator.x, Gator.y
@@ -54,14 +54,46 @@ class Gator(pg.sprite.Sprite):
                 Gator.isJump = False
                 Gator.jumpCount = 10
 
-class enemy(pg.sprite.Sprite):
+class Bulldog(pg.sprite.Sprite):
 
+    bulldog1 = pg.image.load('bulldog1.png').convert_alpha()
+    bulldog2 = pg.image.load('bulldog2.png').convert_alpha()
+    bulldog_attack = pg.image.load('bulldog_attack.png').convert_alpha()
     def __init__(self):
-        super(enemy, self).__init__()
-        self.surf = bulldog1
+        super(Bulldog, self).__init__()
+        self.surf = Bulldog.bulldog1
         self.rect = self.surf.get_rect(
-            center=(
-                random.randint(screen_height + 20, screen_width + 100),
-                random.randint(0, screen_height),
-            )
-         )
+            center=(x,y)
+        )
+
+    #def update(self):
+
+
+class Knight(pg.sprite.Sprite):
+
+    knight1 = pg.image.load('knight1.png').convert_alpha()
+    knight2 = pg.image.load('knight2.png').convert_alpha()
+    knight_attack = pg.image.load('knight_attack.png').convert_alpha()
+    def __init__(self):
+        super(Knight, self).__init__()
+        self.surf = Knight.knight1
+        self.rect = self.surf.get_rect(
+            center=(x,y)
+        )
+
+    #def update(self):
+
+
+
+class Items(pg.sprite.Sprite):
+
+    orange = pg.image.load('orange.png').convert_alpha()
+    flex_bucks = pg.image.load('flex_bucks.jpg').convert_alpha()
+    def __init__(self):
+        super(Items, self).__init__()
+        self.surf = Knight.knight1
+        self.rect = self.surf.get_rect(
+            center=(x,y)
+        )
+
+    #def update(self):

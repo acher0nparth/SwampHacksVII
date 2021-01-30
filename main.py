@@ -13,11 +13,12 @@ def Game_Loop():
 
     chars = {
     'player' : characters.Gator(),
-    'bulldog' : characters.Bulldog(100, 360, 1180), 
-    'knight' : characters.Knight()
+    'bulldog' : characters.Bulldog(100, 360, 1340), 
+    'knight' : characters.Knight(100, 450, 1180)
     }
+    haduk = []
 
-    screen_width = 1280
+    screen_width = 1440
     screen_height = 720
 
     screen = pg.display.set_mode([screen_width, screen_height])
@@ -42,9 +43,31 @@ def Game_Loop():
             if event.type == QUIT:
                 running = False
         
+        for had in haduk:
+            if had.x < 1440 and had.x > 0:
+                had.x = had.x + had.vel
+            else:
+                haduk.pop(haduk.index(had))
+
         pressed_keys = pg.key.get_pressed()
         chars['player'].update(pressed_keys)
-        redrawGameWindow(screen, background, chars)
+
+        if pressed_keys[K_SPACE]:
+            if chars['player'].left:
+                facing = -1
+            elif chars['player'].right:
+                facing = 1
+            else:
+                if chars['player'].wasLeft:
+                    facing = -1
+                else:
+                    facing = 1
+
+            if len(haduk) < 3:
+                #haduk.append(characters.Haduken(round((chars['player'].x + chars['player'].width)//2), round((chars['player'].y + chars['player'].height)//2), facing))
+                haduk.append(characters.Haduken(chars['player'].x, chars['player'].y, facing))
+
+        redrawGameWindow(screen, background, chars, haduk)
 
         clock.tick(60)
 
@@ -52,10 +75,8 @@ def Game_Loop():
     pg.quit()
 
 
-def redrawGameWindow(screen, background, chars) :
+def redrawGameWindow(screen, background, chars, haduk):
     screen.blit(background, (0,0))
-    #screen.blit(bulldog.surf, bulldog.rect)
-    screen.blit(chars['knight'].surf, chars['knight'].rect)
 
     if chars['player'].walkCount + 1 >= 59 :
         chars['player'].walkCount = 0
@@ -71,7 +92,10 @@ def redrawGameWindow(screen, background, chars) :
         else :
             screen.blit(chars['player'].player_standR, (chars['player'].x, chars['player'].y))
     
+    for had in haduk:
+        had.draw(screen)
     chars['bulldog'].draw(screen)
+    chars['knight'].draw(screen)
 
     pg.display.update()
 

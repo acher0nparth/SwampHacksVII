@@ -20,8 +20,6 @@ knight = characters.Knight(100, 450, 1180)
 
 def redrawGameWindow() :
     screen.blit(background, (0,0))
-    #screen.blit(bulldog.surf, bulldog.rect)
-    #screen.blit(knight.surf, knight.rect)
 
     if player.walkCount + 1 >= 59 :
         player.walkCount = 0
@@ -36,9 +34,12 @@ def redrawGameWindow() :
             screen.blit(player.player_standL, (player.x, player.y))
         else :
             screen.blit(player.player_standR, (player.x, player.y))
+    #player.draw
+
     player.hitbox = (player.x + 20, player.y, 24, 48)
     pg.draw.rect(screen, (255, 0, 0), player.hitbox, 2)
-    
+    # multiplier = 2
+    # bulldog.vel = bulldog.vel * multiplier
     bulldog.draw(screen)
     knight.draw(screen)
 

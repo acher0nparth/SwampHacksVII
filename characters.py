@@ -29,7 +29,8 @@ class Gator(pg.sprite.Sprite):
     player_walkR = pg.image.load('gator_sprite2.png').convert_alpha()
     player_standL = pg.image.load('gator_LS1.png').convert_alpha()
     player_walkL = pg.image.load('gator_LS2.png').convert_alpha()
-    player_attack = pg.image.load('gator_attack.png').convert_alpha()
+    haduken = pg.image.load('haduken.png').convert_alpha()
+    hadukenL = pg.image.load('hadukenL.png').convert_alpha()
 
     #used for assigning the walking animation when moving
     walkLeft = [pg.image.load('gator_LS1.png').convert_alpha(), pg.image.load('gator_LS2.png').convert_alpha(), pg.image.load('gator_LS1.png').convert_alpha(), pg.image.load('gator_LS2.png').convert_alpha(), pg.image.load('gator_LS1.png').convert_alpha(), pg.image.load('gator_LS2.png').convert_alpha()]
@@ -80,11 +81,11 @@ class Gator(pg.sprite.Sprite):
             else :
                 self.isJump = False
                 self.jumpCount = 10
+    
 
 class Bulldog(pg.sprite.Sprite):
     width = 64 #CHANGE BASED ON SIZE OF SPRITE
     height = 64 #CHANGE BASED ON SIZE OF SPRITE
-    vel = 2
 
     bulldog1 = pg.image.load('bulldog1.png').convert_alpha()
     bulldog2 = pg.image.load('bulldog2.png').convert_alpha()
@@ -104,7 +105,7 @@ class Bulldog(pg.sprite.Sprite):
         self.height = Bulldog.height
         self.width = Bulldog.width
         self.walk_count = 0
-        self.vel = 3
+        self.vel = 2
         self.path = [x, end]
 
     def draw(self, screen):
@@ -119,7 +120,7 @@ class Bulldog(pg.sprite.Sprite):
             screen.blit(self.walkLeft[self.walk_count//3], (self.x, self.y))
             self.walk_count += 1            
 
-    def move(self):
+    def move(self): 
         if self.vel > 0:
             if self.x  + self.vel < self.path[1]:
                 self.x += self.vel

@@ -9,13 +9,12 @@ def Main():
     Menu()
     Game_Loop() 
 
-
 def Game_Loop():
 
     chars = {
     'player' : characters.Gator(),
-    'bulldog' : characters.Bulldog(100, 360, 1180), 
-    'knight' : characters.Knight()
+    'bulldog' : characters.Bulldog(100, 360, 1340), 
+    'knight' : characters.Knight(100, 450, 1180)
     }
 
     screen_width = 1440
@@ -83,6 +82,8 @@ def redrawGameWindow(screen, background, chars, background_x) :
             screen.blit(chars['player'].player_standR, (chars['player'].x, chars['player'].y))
     
     chars['bulldog'].draw(screen)
+    chars['knight'].draw(screen)
+
     pg.display.update()
 
 

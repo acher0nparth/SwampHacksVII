@@ -131,7 +131,7 @@ def Start_Menu():
         width = 18,
         height = 1, 
         font=("Trebuchet MS",24),
-        command=lambda: window.destroy(),
+        command=lambda: multifunction(window.destroy(), pg.quit()),
         bg = 'white',
         fg = 'blue'
     )
@@ -140,7 +140,7 @@ def Start_Menu():
     clickables.grid(row=1,column=0)
 
     window.mainloop()
-    
+
 
 def InGame_Menu():
     window = tk.Tk()
@@ -223,4 +223,3 @@ def multifunction(*args):
 
 
 Main()
-

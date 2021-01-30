@@ -2,3 +2,4 @@
 .vscode
 __pycache__
 __pycache__/characters.cpython-39.pyc
+*.pyc

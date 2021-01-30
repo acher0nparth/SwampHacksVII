@@ -7,8 +7,7 @@ from pygame.locals import *
 
 def Main():
 
-    Menu()
-    Game_Loop() 
+    Start_Menu() 
 
 def Game_Loop():
 
@@ -44,7 +43,7 @@ def Game_Loop():
                 if event.key == K_ESCAPE :
                     running = False
                 elif event.key == K_m :
-                    Menu()
+                    InGame_Menu()
 
             # Did the user click the window close button? If so, stop the loop.
             if event.type == QUIT:
@@ -94,8 +93,75 @@ def redrawGameWindow(screen, background, chars, terr, background_x) :
         terr['grass'].draw(screen, x * terr['grass'].width, 570) #take screen_height and - dirt layers
     pg.display.update()
 
-def Menu():
+
+def Start_Menu():
     window = tk.Tk()
+    window['background']='orange'
+    window.overrideredirect(1)
+
+    w = 334# width for the Tk root
+    h = 286 # height for the Tk root
+
+    # get screen width and height
+    ws = window.winfo_screenwidth() # width of the screen
+    hs = window.winfo_screenheight() # height of the screen
+
+    # calculate x and y coordinates for the Tk root window
+    x = (ws/2) - (w/2)
+    y = (hs/2) - (h/2)
+
+    # set the dimensions of the screen 
+    # and where it is placed
+    window.geometry('%dx%d+%d+%d' % (w, h, x, y))
+
+    window.resizable(False,False)
+    clickables = tk.Frame(master=window)
+    title = tk.Label(master=window,text="Main Menu", font=("Trebuchet MS",42), bg='orange',
+    fg = 'blue')
+    title.grid(row=0,column=0)
+
+    start_game = tk.Button(
+        master=clickables,
+        text="Start New Game",
+        width = 18,
+        height = 1, 
+        font=("Trebuchet MS",24),
+        command=lambda:multifunction(window.destroy(),Game_Loop()),
+        bg = 'white',
+        fg = 'blue'
+    )
+    start_game.pack()
+    disp_highscores = tk.Button(
+        master=clickables,
+        text="Display Highscores",
+        width = 18,
+        height = 1, 
+        font=("Trebuchet MS",24),
+        bg = 'white',
+        fg = 'blue'
+    )
+    disp_highscores.pack()
+    quit_game = tk.Button(
+        master=clickables,
+        text="Quit to Desktop",
+        width = 18,
+        height = 1, 
+        font=("Trebuchet MS",24),
+        command=lambda: multifunction(window.destroy(), pg.quit()),
+        bg = 'white',
+        fg = 'blue'
+    )
+    quit_game.pack()
+ 
+    clickables.grid(row=1,column=0)
+
+    window.mainloop()
+
+
+def InGame_Menu():
+    window = tk.Tk()
+    window['background'] = 'orange'
+    window.overrideredirect(1)
 
     w = 334# width for the Tk root
     h = 356 # height for the Tk root
@@ -114,51 +180,57 @@ def Menu():
 
     window.resizable(False,False)
     clickables = tk.Frame(master=window)
-    title = tk.Label(master=window,text="Main Menu", font=("Trebuchet MS",42))
+    title = tk.Label(master=window,text="Game Menu", font=("Trebuchet MS",42), bg='orange',
+    fg = 'blue')
     title.grid(row=0,column=0)
 
-    start_game = tk.Button(
+    resume_game = tk.Button(
         master=clickables,
-        text="Start New Game",
+        text="Resume Game",
         width = 18,
         height = 1, 
         font=("Trebuchet MS",24),
-        command=lambda:multifunction(window.destroy(), Game_Loop())
+        command=lambda:window.destroy(), 
+        bg = 'white',
+        fg = 'blue'
     )
-    start_game.pack()
-    disp_highscores = tk.Button(
-        master=clickables,
-        text="Display Highscores",
-        width = 18,
-        height = 1, 
-        font=("Trebuchet MS",24)
-    )
-    disp_highscores.pack()
+    resume_game.pack()
     exchange = tk.Button(
         master=clickables,
         text="Exchange Flex Bucks",
         width = 18,
         height = 1, 
-        font=("Trebuchet MS",24)
+        font=("Trebuchet MS",24),
+        bg = 'white',
+        fg = 'blue'
     )
     exchange.pack()
-    resume = tk.Button(
+    return_main_menu = tk.Button(
         master=clickables,
-        text="Resume Game",
+        text="Quit to Main Menu",
         width = 18,
-        height = 1,
+        height = 1, 
         font=("Trebuchet MS",24),
-        command=lambda:Resume_Game(window)
+        command=lambda:multifunction(window.destroy(),Start_Menu()),
+        bg = 'white',
+        fg = 'blue'
     )
-    resume.pack()
+    return_main_menu.pack()
+    quit_game = tk.Button(
+        master=clickables,
+        text="Quit to Desktop",
+        width = 18,
+        height = 1, 
+        font=("Trebuchet MS",24),
+        command=lambda:multifunction(window.destroy(),pg.quit()),
+        bg = 'white',
+        fg = 'blue'
+    )
+    quit_game.pack()
 
     clickables.grid(row=1,column=0)
 
     window.mainloop()
-    
-
-def Resume_Game(menu_window):
-    menu_window.destroy()
 
 
 def multifunction(*args):

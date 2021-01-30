@@ -110,7 +110,7 @@ def Menu():
         width = 18,
         height = 1, 
         font=("Trebuchet MS",24),
-        command=lambda:multifunction(window.destroy(), Game_Loop())
+        command=lambda:window.destroy()
     )
     start_game.pack()
     disp_highscores = tk.Button(

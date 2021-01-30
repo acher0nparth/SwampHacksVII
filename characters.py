@@ -51,8 +51,9 @@ class Gator(pg.sprite.Sprite):
             self.x -= self.vel
             self.left = True
             self.right = False
-        elif (pressed_keys[K_RIGHT] or pressed_keys[K_d]) and self.x < screen_width - self.width - self.vel :
-            self.x += self.vel
+        elif (pressed_keys[K_RIGHT] or pressed_keys[K_d]) :
+            if self.x < screen_width * 2 / 3 - self.width - self.vel :
+                self.x += self.vel
             self.left = False
             self.right = True
         else :

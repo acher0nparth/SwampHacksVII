@@ -130,7 +130,6 @@ def Start_Menu():
         'close' : tk.PhotoImage(file="Menu/Buttons/Close.png"),
     }
     clickables = tk.Frame(master=window)
-    labels = tk.Frame(master=window)
     title = tk.Label(master=window,text="Main Menu", font=("Trebuchet MS",42), bg='orange',
     fg = 'blue')
     title.grid(row=0,column=0,sticky='')
@@ -168,7 +167,7 @@ def Start_Menu():
         width = 334,
         height = 50, 
         font=("Trebuchet MS",24),
-        command=lambda: multifunction(window.destroy(), pg.quit()),
+        command=lambda: multifunction(window.destroy(),pg.quit()),
         bg = 'white',
         fg = 'blue', 
         image=images['close'], 

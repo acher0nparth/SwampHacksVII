@@ -2,11 +2,9 @@ import random
 import pygame as pg
 import math
 from pygame.locals import *
-
-screen_width = 1440
-screen_height = 720
-
-screen = pg.display.set_mode([screen_width, screen_height])
+from settings import screen
+from settings import screen_width
+from settings import screen_height
 
 class Gator(pg.sprite.Sprite):
     #can change name, just set to this for now
@@ -33,7 +31,9 @@ class Gator(pg.sprite.Sprite):
         self.vel = 5
         self.x = screen_width / 2
         self.y = 538 #hard coded and dependent upon the resolution
-        self.hitbox = (self.x + 20, self.y, 24, 48)
+        self.hitbox = (self.x, self.y, 24, 36)
+        self.coins = 0
+        self.oranges = 0
 
     def update(self, pressed_keys):
         if (pressed_keys[K_LEFT] or pressed_keys[K_a]) and self.x > self.vel :
@@ -70,6 +70,21 @@ class Gator(pg.sprite.Sprite):
             else :
                 self.isJump = False
                 self.jumpCount = 10
+        
+    def take_damage(self):
+        print('ouch')
+
+    def gain_coin(self):
+        self.coins += 1
+        print('flex bucks: ', self.coins)
+
+    def gain_orange(self):
+        self.oranges += 1
+        print('oranges: ', self.oranges)
+
+    def exchange(self):
+        self.coin = self.coins - 10
+        self.oranges += 1
     
 
 class Bulldog(pg.sprite.Sprite):
@@ -88,13 +103,13 @@ class Bulldog(pg.sprite.Sprite):
 
 
     def __init__(self, x, y, end):
-        super(Bulldog, self).__init__()
         self.x = x
         self.y = y
         self.height = Bulldog.height
         self.width = Bulldog.width
         self.walk_count = 0
         self.vel = 3
+        self.hitbox = (self.x, self.y-20, 70, 60)
         self.path = [x, end]
         self.isRight = False
         self.onPlatform = False
@@ -114,7 +129,9 @@ class Bulldog(pg.sprite.Sprite):
             if self.x > self.path[1] :
                 self.x = self.path[1] - 1
             screen.blit(self.walkLeft[self.walk_count//3], (self.x, self.y))
-            self.walk_count += 1            
+            self.walk_count += 1  
+        self.hitbox = (self.x, self.y-20, 70, 60) 
+        pg.draw.rect(screen, (0,255,0), self.hitbox, 2)         
 
     def move(self, option): 
         if self.vel >= 0:
@@ -135,6 +152,9 @@ class Bulldog(pg.sprite.Sprite):
                 self.vel = self.vel * -1
                 self.walk_count = 0
 
+    def hit(self):
+        print('hit bulldog')
+
 class Knight(pg.sprite.Sprite):
     width = 64 #CHANGE BASED ON SIZE OF SPRITE
     height = 64 #CHANGE BASED ON SIZE OF SPRITE
@@ -152,13 +172,13 @@ class Knight(pg.sprite.Sprite):
 
 
     def __init__(self, x, y, end):
-        super(Knight, self).__init__()
         self.x = x
         self.y = y
         self.height = Knight.height
         self.width = Knight.width
         self.walk_count = 0
         self.vel = 2
+        self.hitbox = (self.x, self.y -10, 45, 65) 
         self.path = [x, end]
         self.isRight = False
         self.onPlatform = False
@@ -178,7 +198,9 @@ class Knight(pg.sprite.Sprite):
             if self.x > self.path[1] :
                 self.x = self.path[1] - 1
             screen.blit(self.walkLeft[self.walk_count//3], (self.x, self.y))
-            self.walk_count += 1            
+            self.walk_count += 1  
+        self.hitbox = (self.x, self.y-10, 45, 65) 
+        pg.draw.rect(screen, (0,255,0), self.hitbox, 2)           
 
     def move(self, option):
         if self.vel > 0:
@@ -198,6 +220,9 @@ class Knight(pg.sprite.Sprite):
             else:
                 self.vel = self.vel * -1
                 self.walk_count = 0
+    
+    def hit(self):
+        print('hit knight')
 
 class Haduken(pg.sprite.Sprite):
     vel = 8
@@ -209,6 +234,7 @@ class Haduken(pg.sprite.Sprite):
     def __init__(self, x, y, facing):
         self.x = x
         self.y = y
+        self.hitbox = (self.x + 8, self.y + 6, 26, 22) 
         self.facing = facing
         self.vel = 8 * facing
 
@@ -216,17 +242,35 @@ class Haduken(pg.sprite.Sprite):
         if self.facing == 1:
             screen.blit(self.haduken, (self.x, self.y))
         else: 
-            screen.blit(self.hadukenL, (self.x, self.y))            
+            screen.blit(self.hadukenL, (self.x, self.y)) 
+        self.hitbox = (self.x + 8, self.y + 6, 26, 22) 
+        pg.draw.rect(screen, (0,255,0), self.hitbox, 2)             
 
-class Items(pg.sprite.Sprite):
+class Orange(pg.sprite.Sprite):
 
     orange = pg.image.load('orange.png').convert_alpha()
-    flex_bucks = pg.image.load('flex_bucks.jpg').convert_alpha()
-    def __init__(self):
-        super(Items, self).__init__()
-        self.surf = Items.orange
-        self.rect = self.surf.get_rect(
-            center=(x,y)
-        )
 
-    #def update(self):
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.hitbox = (self.x + 35, self.y + 20, 70, 70) 
+
+    def draw(self, screen):
+        screen.blit(self.orange, (self.x, self.y))
+        self.hitbox = (self.x + 35, self.y + 20, 70, 70) 
+        pg.draw.rect(screen, (0,255,0), self.hitbox, 2)  
+
+
+class Bucks(pg.sprite.Sprite):
+    
+    flex_bucks = pg.image.load('coin.png').convert_alpha()
+
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.hitbox = (self.x + 10, self.y, 30, 40) 
+
+    def draw(self, screen):
+        screen.blit(self.flex_bucks, (self.x, self.y))
+        self.hitbox = (self.x + 10, self.y, 30, 40) 
+        pg.draw.rect(screen, (0,255,0), self.hitbox, 2) 

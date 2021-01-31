@@ -41,9 +41,8 @@ def Game_Loop():
 
     #chars['bulldog'].append(characters.Bulldog(100, 480, 1340))
     #chars['knight'].append(characters.Knight(100, 450, 1180))
-
-    items['cash'].append(characters.Bucks(200, 300))
-    items['oranges'].append(characters.Orange(300, 300))
+    #items['cash'].append(characters.Bucks(200, 300))
+    #items['oranges'].append(characters.Orange(300, 300))
 
     haduk = []
     haduk_loop = 0
@@ -117,14 +116,27 @@ def Game_Loop():
             y_pos = random.randrange(400, 461)
             #1 small brown platform
             if r < 6:
+                orange = random.randrange(0, 35)
+                if orange < 1 :
+                    oranges.append(characters.Orange(background.get_rect().width + 35, y_pos))
                 platforms.append(terrain.Platform(background.get_rect().width, y_pos))
             else :
+                orange = False
+                if r > 14 :
                 #1 long brown platform
-                platforms.append(terrain.LongPlatform(background.get_rect().width, y_pos))
-                #1 long and 1 short above 
-                if r > 13 :
+                    oj = random.randrange(0, 35)
+                    if oj < 1 :
+                        oranges.append(characters.Orange(background.get_rect().width + 48, y_pos - 108))
+                        orange = True
+                    platforms.append(terrain.LongPlatform(background.get_rect().width, y_pos))
+                    #1 long and 1 short above 
                     y_pos = random.randrange(244, 322)
                     x_pos = random.randrange(0, 97)
+                    if not orange :
+                        oj = random.randrange(0, 1)
+                        if oj < 1 :
+                            oranges.append(characters.Orange(background.get_rect().width + 64, y_pos - 108))
+                            orange = True
                     platforms.append(terrain.Platform(background.get_rect().width + x_pos, y_pos))
         
         for had in haduk:
@@ -227,6 +239,10 @@ def redrawGameWindow(screen, background, chars, terr, background_x, haduk, items
         if chars['player'].x >= screen_width * 4 / 5 - chars['player'].width * 3 - chars['player'].vel :
             background_x[0] -= 5
             steps[0] += 5
+            for buck in items['cash'] :
+                buck.x -= 5
+            for orange in items['oranges'] :
+                orange.x -= 5
             if terr['platforms'] :
                 for x in terr['platforms'] :
                     x.x -= 5
@@ -237,7 +253,7 @@ def redrawGameWindow(screen, background, chars, terr, background_x, haduk, items
                     dog.path[0] -= 5
                     dog.path[1] -= 5
                     if dog.path[1] < 0 :
-                        dog.kill()
+                        chars['bulldog'].pop(chars['bulldog'].index(dog))
                         enemiesCount[0] -= 1
                     if dog.isRight :
                         dog.option = 2
@@ -246,7 +262,7 @@ def redrawGameWindow(screen, background, chars, terr, background_x, haduk, items
                     knight.path[0] -= 5
                     knight.path[1] -= 5
                     if knight.path[1] < 0 :
-                        knight.kill()
+                        chars['knight'].pop(chars['knight'].index(knight))
                         enemiesCount[0] -= 1
                 if knight.isRight : 
                     knight.option = 2

@@ -211,9 +211,9 @@ def redrawGameWindow(screen, background, chars, terr, background_x, haduk, items
     if relative_background_x < screen_width :
         screen.blit(background, (relative_background_x, 0))
 
-    for dog in chars['bulldogs'] :
+    for dog in chars['bulldog'] :
         dog.option = 1
-    for knight in chars['knights'] :
+    for knight in chars['knight'] :
         knight.option = 1
     
     if chars['player'].walkCount + 1 >= 59 :

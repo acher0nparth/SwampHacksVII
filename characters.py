@@ -32,7 +32,7 @@ class Gator(pg.sprite.Sprite):
         self.x = screen_width / 2
         self.y = 538 #hard coded and dependent upon the resolution
         self.hitbox = (self.x, self.y, 24, 36)
-        self.coins = 0
+        self.coins = 10
         self.oranges = 0
         self.health = 3
         self.isDead = False
@@ -90,8 +90,7 @@ class Gator(pg.sprite.Sprite):
 
     def exchange(self):
         while self.coins >= 10:
-            self.coin = self.coins - 10
-            self.oranges += 1
+            self.coins = self.coins - 10
             self.gain_orange()
         return self.coins
         

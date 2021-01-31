@@ -50,14 +50,6 @@ def Game_Loop():
     items['heart'].append(characters.Heart(48, 0))
     items['heart'].append(characters.Heart(96, 0))
 
-    chars['bulldog'].append(characters.Bulldog(100, 480, 1340))
-    chars['knight'].append(characters.Knight(100, 450, 1180))
-
-    items['cash'].append(characters.Bucks(200, 300))
-    items['oranges'].append(characters.Orange(300, 300))
-    items['oranges'].append(characters.Orange(350, 350))
-    items['oranges'].append(characters.Orange(300, 350))
-
     haduk = []
     haduk_loop = 0
 
@@ -92,13 +84,13 @@ def Game_Loop():
                 if event.key == K_m :
                     InGame_Menu()
 
-            if event.type == USEREVENT + 1 and enemiesCount[0] < 1:
+            if event.type == USEREVENT + 1 and enemiesCount[0] < 8:
                 r = random.randrange(0, 6)
                 if platforms :
-                    platSpawn = random.randrange(0, 3)
+                    platSpawn = random.randrange(0, 4)
                 else :
-                    platSpawn = 0
-                if platSpawn < 3 :
+                    platSpawn = 1
+                if platSpawn < 1 :
                     for x in platforms : 
                         r = random.randrange(0, 2)
                         if r == 0 :
@@ -130,14 +122,27 @@ def Game_Loop():
             y_pos = random.randrange(400, 461)
             #1 small brown platform
             if r < 6:
+                orange = random.randrange(0, 35)
+                if orange < 1 :
+                    oranges.append(characters.Orange(background.get_rect().width + 35, y_pos))
                 platforms.append(terrain.Platform(background.get_rect().width, y_pos))
             else :
+                orange = False
+                if r > 14 :
                 #1 long brown platform
-                platforms.append(terrain.LongPlatform(background.get_rect().width, y_pos))
-                #1 long and 1 short above 
-                if r > 13 :
+                    oj = random.randrange(0, 35)
+                    if oj < 1 :
+                        oranges.append(characters.Orange(background.get_rect().width + 48, y_pos - 108))
+                        orange = True
+                    platforms.append(terrain.LongPlatform(background.get_rect().width, y_pos))
+                    #1 long and 1 short above 
                     y_pos = random.randrange(244, 322)
                     x_pos = random.randrange(0, 97)
+                    if not orange :
+                        oj = random.randrange(0, 1)
+                        if oj < 1 :
+                            oranges.append(characters.Orange(background.get_rect().width + 64, y_pos - 108))
+                            orange = True
                     platforms.append(terrain.Platform(background.get_rect().width + x_pos, y_pos))
         
         for had in haduk:
@@ -172,14 +177,14 @@ def Game_Loop():
                     if chars['player'].x > bd.hitbox[0] and chars['player'].x < bd.hitbox[0] + bd.hitbox[2]:
                         chars['player'].take_damage()
                         items['heart'].pop() 
-                        #pg.time.set_timer(USEREVENT + 2, 3000)
+                        pg.time.set_timer(USEREVENT + 2, 3000)
         for kn in chars['knight']:
             if len(chars['knight']) > 0:
                 if chars['player'].y < kn.hitbox[1] + kn.hitbox[3] and chars['player'].y > kn.hitbox[1]:
                     if chars['player'].x > kn.hitbox[0] and chars['player'].x < kn.hitbox[0] + kn.hitbox[2]:
                         chars['player'].take_damage()
                         items['heart'].pop() 
-                        #pg.time.set_timer(USEREVENT +2, 3000)
+                        pg.time.set_timer(USEREVENT +3, 3000)
         for cs in items['cash']:
             if len(items['cash']) > 0:
                 if chars['player'].y < cs.hitbox[1] + cs.hitbox[3] and chars['player'].y > cs.hitbox[1]:
@@ -193,11 +198,11 @@ def Game_Loop():
                         chars['player'].gain_orange()
                         items['oranges'].pop(items['oranges'].index(ora))
 
-        # if event.type == USEREVENT + 2:
-        #     chars['player'].isInvulnerable = True
-        #     print('invulnerable')
-        # else:
-        #     chars['player'].isInvulnerable = False
+        if event.type == USEREVENT + 2 or event.type == USEREVENT + 3:
+            chars['player'].isInvulnerable = True
+            print('invulnerable')
+        else:
+            chars['player'].isInvulnerable = False
 
         pressed_keys = pg.key.get_pressed()
         chars['player'].update(pressed_keys)
@@ -250,6 +255,10 @@ def redrawGameWindow(screen, background, chars, terr, background_x, haduk, items
         if chars['player'].x >= screen_width * 4 / 5 - chars['player'].width * 3 - chars['player'].vel :
             background_x[0] -= 5
             steps[0] += 5
+            for buck in items['cash'] :
+                buck.x -= 5
+            for orange in items['oranges'] :
+                orange.x -= 5
             if terr['platforms'] :
                 for x in terr['platforms'] :
                     x.x -= 5
@@ -582,7 +591,7 @@ def multifunction(*args):
         function()
 
 
-Main()
+Main() 
 
 #winning screen
 #exchange flex bucks for hp

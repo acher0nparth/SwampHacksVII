@@ -46,10 +46,6 @@ def Game_Loop():
         'heart' : heart
     }
 
-    items['heart'].append(characters.Heart(0, 0))
-    items['heart'].append(characters.Heart(48, 0))
-    items['heart'].append(characters.Heart(96, 0))
-
     haduk = []
     haduk_loop = 0
 
@@ -147,6 +143,9 @@ def Game_Loop():
                             orange = True
                     platforms.append(terrain.Platform(background.get_rect().width + x_pos, y_pos))
         
+
+
+
         for had in haduk:
             for bd in chars['bulldog']:
                 if len(chars['bulldog']) > 0:
@@ -155,7 +154,7 @@ def Game_Loop():
                             bd.hit()
                             haduk.pop(haduk.index(had))
                             cash.append(characters.Bucks(bd.x, bd.y))
-                            chars['bulldog'].pop()
+                            chars['bulldog'].pop(chars['bulldog'].index(bd))
                             enemiesCount[0] -= 1
             for kn in chars['knight']:
                 if len(chars['knight']) > 0:
@@ -164,13 +163,15 @@ def Game_Loop():
                             kn.hit()
                             haduk.pop(haduk.index(had))
                             cash.append(characters.Bucks(kn.x, kn.y))
-                            chars['knight'].pop()           
+                            chars['knight'].pop(chars['knight'].index(kn))           
                             enemiesCount[0] -= 1
 
             if had.x < 1440 and had.x > 0:
                 had.x = had.x + had.vel
             else:
                 haduk.pop(haduk.index(had))
+
+
 
         #collision detection for player    
         for bd in chars['bulldog']:
@@ -179,14 +180,12 @@ def Game_Loop():
                     if chars['player'].x > bd.hitbox[0] and chars['player'].x < bd.hitbox[0] + bd.hitbox[2]:
                         chars['player'].take_damage()
                         items['heart'].pop() 
-                        pg.time.set_timer(USEREVENT + 2, 3000)
         for kn in chars['knight']:
             if len(chars['knight']) > 0:
                 if chars['player'].y < kn.hitbox[1] + kn.hitbox[3] and chars['player'].y > kn.hitbox[1]:
                     if chars['player'].x > kn.hitbox[0] and chars['player'].x < kn.hitbox[0] + kn.hitbox[2]:
                         chars['player'].take_damage()
                         items['heart'].pop() 
-                        pg.time.set_timer(USEREVENT +3, 3000)
         for cs in items['cash']:
             if len(items['cash']) > 0:
                 if chars['player'].y < cs.hitbox[1] + cs.hitbox[3] and chars['player'].y > cs.hitbox[1]:
@@ -200,14 +199,22 @@ def Game_Loop():
                         chars['player'].gain_orange()
                         items['oranges'].pop(items['oranges'].index(ora))
 
-        if event.type == USEREVENT + 2 or event.type == USEREVENT + 3:
-            chars['player'].isInvulnerable = True
-            print('invulnerable')
-        else:
-            chars['player'].isInvulnerable = False
-
         pressed_keys = pg.key.get_pressed()
         chars['player'].update(pressed_keys)
+
+        for plat in terr['platforms']:
+            if chars['player'].x > plat.x and chars['player'].x <= plat.x + plat.width * 3 + 10:
+                if chars['player'].y > plat.y - 64 and chars['player'].y < plat.y + 16:
+                    print('accessed')
+                    chars['player'].onPlat = True
+                    chars['player'].y = plat.y - 29
+                    chars['player'].platform_y = plat.y
+            else:
+                chars['player'].onPlat = False
+                
+        if not chars['player'].onPlat and chars['player'].y > 600:
+            chars['player'].y = 538
+
 
         if pressed_keys[K_SPACE] and haduk_loop == 0:
             if chars['player'].left:
@@ -223,6 +230,7 @@ def Game_Loop():
                 #haduk.append(characters.Haduken(round((chars['player'].x + chars['player'].width)//2), round((chars['player'].y + chars['player'].height)//2), facing))
                 haduk.append(characters.Haduken(chars['player'].x, chars['player'].y, facing))
             haduk_loop = 1
+    
 
         redrawGameWindow(screen, background, chars, terr, background_x, haduk, items, steps, enemiesCount)
 
@@ -306,6 +314,9 @@ def redrawGameWindow(screen, background, chars, terr, background_x, haduk, items
         buck.draw(screen) 
     for citrus in items['oranges']:
         citrus.draw(screen) 
+    items['heart'].clear()
+    for ht in range(chars['player'].health):
+        items['heart'].append(characters.Heart(ht*48, 0))
     for love in items['heart']:
         love.draw(screen)
     items['oranges_s'].clear()

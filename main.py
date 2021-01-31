@@ -65,7 +65,6 @@ def Game_Loop():
     running = True
     while running:
         
-        chars['player'].isDead
         if haduk_loop > 0:
             haduk_loop += 1
         if haduk_loop > 10:
@@ -201,19 +200,6 @@ def Game_Loop():
 
         pressed_keys = pg.key.get_pressed()
         chars['player'].update(pressed_keys)
-
-        for plat in terr['platforms']:
-            if chars['player'].x > plat.x and chars['player'].x <= plat.x + plat.width * 3 + 10:
-                if chars['player'].y > plat.y - 64 and chars['player'].y < plat.y + 16:
-                    print('accessed')
-                    chars['player'].onPlat = True
-                    chars['player'].y = plat.y - 29
-                    chars['player'].platform_y = plat.y
-            else:
-                chars['player'].onPlat = False
-                
-        if not chars['player'].onPlat and chars['player'].y > 600:
-            chars['player'].y = 538
 
 
         if pressed_keys[K_SPACE] and haduk_loop == 0:

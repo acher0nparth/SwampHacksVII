@@ -34,6 +34,9 @@ class Gator(pg.sprite.Sprite):
         self.hitbox = (self.x, self.y, 24, 36)
         self.coins = 0
         self.oranges = 0
+        self.health = 3
+        self.isDead = False
+        self.isInvulnerable = False
 
     def update(self, pressed_keys):
         if (pressed_keys[K_LEFT] or pressed_keys[K_a]) and self.x > self.vel :
@@ -73,6 +76,9 @@ class Gator(pg.sprite.Sprite):
         
     def take_damage(self):
         print('ouch')
+        self.health = self.health - 1
+        if self.health == 0:
+            self.isDead = True
 
     def gain_coin(self):
         self.coins += 1
@@ -86,6 +92,7 @@ class Gator(pg.sprite.Sprite):
         while self.coins >= 10:
             self.coin = self.coins - 10
             self.oranges += 1
+            self.gain_orange()
         return self.coins
         
 
@@ -276,3 +283,25 @@ class Bucks(pg.sprite.Sprite):
         screen.blit(self.flex_bucks, (self.x, self.y))
         self.hitbox = (self.x + 10, self.y, 30, 40) 
         pg.draw.rect(screen, (0,255,0), self.hitbox, 2) 
+
+class Heart(pg.sprite.Sprite):
+
+    heart = pg.image.load('heart.png').convert_alpha()
+
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def draw(self, screen):
+        screen.blit(self.heart, (self.x, self.y))
+
+class Orange_Small(pg.sprite.Sprite):
+
+    orange_small = pg.image.load('orange_small.png').convert_alpha()
+
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def draw(self, screen):
+        screen.blit(self.orange_small, (self.x, self.y))

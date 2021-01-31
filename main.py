@@ -537,7 +537,7 @@ def Menu_Background():
 
 
 def Exchange(button):
-    if (chars['player'].coins > 10):
+    if (chars['player'].coins >= 10):
         chars['player'].exchange()
         coins_left = str(chars['player'].coins)
         button.config(text="Exchange Complete!\n" + coins_left + " Flex Bucks left.",

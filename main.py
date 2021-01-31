@@ -3,6 +3,8 @@ import terrain
 import random
 import pygame as pg
 import tkinter as tk
+import os
+from settings import screen,screen_width,screen_width 
 from pygame.locals import *
 
 def Main():
@@ -25,25 +27,22 @@ def Game_Loop():
 
     haduk = []
 
-    screen_width = 1440
-    screen_height = 720
-
-    screen = pg.display.set_mode([screen_width, screen_height], pg.NOFRAME)
     background = pg.image.load('background.png')
     background_x = [0]
 
     clock = pg.time.Clock()
-
-    pg.init()
     # Run until the user asks to quit
     running = True
+    dead = False
     while running:
         #get every event in the queue
+        if dead:
+            Death_Screen()
         for event in pg.event.get():
             if event.type == KEYDOWN :
                 if event.key == K_ESCAPE :
-                    running = False
-                elif event.key == K_m :
+                    InGame_Menu()
+                if event.key == K_m :
                     InGame_Menu()
 
             # Did the user click the window close button? If so, stop the loop.
@@ -123,6 +122,8 @@ def redrawGameWindow(screen, background, chars, terr, background_x, haduk) :
 
 
 def Start_Menu():
+    Menu_Background()
+    
     window = tk.Tk()
     window['background']='orange'
     window.overrideredirect(1)
@@ -283,7 +284,7 @@ def InGame_Menu():
 def Story():
     window = tk.Tk()
     window.overrideredirect(1)
-    w = 334# width for the Tk root
+    w = 500# width for the Tk root
     h = 356 # height for the Tk root
 
     # get screen width and height
@@ -300,10 +301,75 @@ def Story():
 
     window.resizable(False,False)
     window.after(5000, lambda:window.destroy())
-    story_text = """Defend your swamp from the evil Knights and Bulldogs! Collect flex bucks and delicious oranges!"""
-    story=tk.Label(window, height = 50, width = 50, text = story_text, wraplength=250, justify=tk.CENTER)
+    story_text = """Defend your swamp from the evil Knights and Bulldogs!\n\nCollect 6 delicious oranges to win!"""
+    story=tk.Label(window, height = 50, width = 200, text = story_text,
+     wraplength=550, justify=tk.CENTER, bg='blue',fg='orange',font=('Trebucet MS',24))
     story.pack(side=tk.TOP)
     window.mainloop()
+
+
+def Death_Screen():
+    window=tk.Tk()
+    window['background']='red'
+    window.overrideredirect(1)
+    frame=tk.Frame(window,borderwidth=0,highlightthickness=0,bg='red')
+    frame.pack()
+    w = 1000# width for the Tk root
+    h = 750 # height for the Tk root
+    # get screen width and height
+    ws = window.winfo_screenwidth() # width of the screen
+    hs = window.winfo_screenheight() # height of the screen
+
+    # calculate x and y coordinates for the Tk root window
+    x = (ws/2) - (w/2)
+    y = (hs/2) - (h/2)
+
+    # set the dimensions of the screen 
+    # and where it is placed
+    window.geometry('%dx%d+%d+%d' % (w, h, x, y))
+    window.resizable(False,False)
+    game_over=tk.PhotoImage(file="GameOver.png")
+    game_over_canvas = tk.Canvas(master=frame, bg='red', width=1000, height=500, highlightthickness=0)
+    game_over_canvas.pack()
+    game_over_canvas.create_image(500,261,image=game_over)
+
+    dead_gator=tk.PhotoImage(file='DeadGator.png')
+    dead_gator_canvas=tk.Canvas(master=frame,bg='red',width=200,height=125,highlightthickness=0)
+    dead_gator_canvas.pack(side=tk.TOP)
+    dead_gator_canvas.create_image(90,77,image=dead_gator)
+
+    start_game = tk.Button(
+        text="New Game",
+        width = 15,
+        height = 1, 
+        font=("Trebuchet MS",24),
+        command=lambda:multifunction(window.destroy(),Game_Loop()),
+        bg = 'black',
+        fg = 'red',
+        compound=tk.LEFT
+    )
+    start_game.pack()
+
+    quit_game = tk.Button(
+        window,
+        text="Quit to Desktop",
+        width = 15,
+        height = 1, 
+        font=("Trebuchet MS",24),
+        command=lambda:multifunction(window.destroy(),pg.quit()),
+        bg = 'black',
+        fg = 'red'
+    )
+    quit_game.pack()
+
+    window.mainloop()
+
+
+def Menu_Background():
+
+    background = pg.image.load('background.png')
+    screen.blit(background, (0,0))
+    pg.display.update()
 
 
 def multifunction(*args):

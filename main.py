@@ -7,19 +7,24 @@ import os
 from settings import screen,screen_width,screen_width 
 from pygame.locals import *
 
+
 def Main():
 
     Start_Menu()
 
 
 def Game_Loop():
+    pg.init()
 
     knights = []
     bulldogs = []
     cash = []
     oranges = []
     enemiesCount = [0]
+    oranges_s = []
+    heart = []
 
+    global chars
     chars = {
     'player' : characters.Gator(),
     'bulldog' : bulldogs, 
@@ -36,13 +41,14 @@ def Game_Loop():
 
     items = {
         'cash' : cash,
-        'oranges' : oranges
+        'oranges' : oranges,
+        'oranges_s' : oranges_s,
+        'heart' : heart
     }
 
-    #chars['bulldog'].append(characters.Bulldog(100, 480, 1340))
-    #chars['knight'].append(characters.Knight(100, 450, 1180))
-    #items['cash'].append(characters.Bucks(200, 300))
-    #items['oranges'].append(characters.Orange(300, 300))
+    items['heart'].append(characters.Heart(0, 0))
+    items['heart'].append(characters.Heart(48, 0))
+    items['heart'].append(characters.Heart(96, 0))
 
     haduk = []
     haduk_loop = 0
@@ -61,9 +67,9 @@ def Game_Loop():
 
     # Run until the user asks to quit
     running = True
-    dead = False
     while running:
         
+        dead = chars['player'].isDead
         if haduk_loop > 0:
             haduk_loop += 1
         if haduk_loop > 10:
@@ -84,7 +90,7 @@ def Game_Loop():
                     platSpawn = random.randrange(0, 3)
                 else :
                     platSpawn = 0
-                if platSpawn < 3 :
+                if platSpawn < 1 :
                     for x in platforms : 
                         r = random.randrange(0, 2)
                         if r == 0 :
@@ -170,11 +176,15 @@ def Game_Loop():
                 if chars['player'].y < bd.hitbox[1] + bd.hitbox[3] and chars['player'].y > bd.hitbox[1]:
                     if chars['player'].x > bd.hitbox[0] and chars['player'].x < bd.hitbox[0] + bd.hitbox[2]:
                         chars['player'].take_damage()
+                        items['heart'].pop() 
+                        #pg.time.set_timer(USEREVENT + 2, 3000)
         for kn in chars['knight']:
             if len(chars['knight']) > 0:
                 if chars['player'].y < kn.hitbox[1] + kn.hitbox[3] and chars['player'].y > kn.hitbox[1]:
                     if chars['player'].x > kn.hitbox[0] and chars['player'].x < kn.hitbox[0] + kn.hitbox[2]:
                         chars['player'].take_damage()
+                        items['heart'].pop() 
+                        #pg.time.set_timer(USEREVENT +2, 3000)
         for cs in items['cash']:
             if len(items['cash']) > 0:
                 if chars['player'].y < cs.hitbox[1] + cs.hitbox[3] and chars['player'].y > cs.hitbox[1]:
@@ -187,6 +197,12 @@ def Game_Loop():
                     if chars['player'].x > ora.hitbox[0] and chars['player'].x < ora.hitbox[0] + ora.hitbox[2]:
                         chars['player'].gain_orange()
                         items['oranges'].pop(items['oranges'].index(ora))
+
+        # if event.type == USEREVENT + 2:
+        #     chars['player'].isInvulnerable = True
+        #     print('invulnerable')
+        # else:
+        #     chars['player'].isInvulnerable = False
 
         pressed_keys = pg.key.get_pressed()
         chars['player'].update(pressed_keys)
@@ -287,7 +303,14 @@ def redrawGameWindow(screen, background, chars, terr, background_x, haduk, items
     for buck in items['cash']:
         buck.draw(screen) 
     for citrus in items['oranges']:
-        citrus.draw(screen)    
+        citrus.draw(screen) 
+    for love in items['heart']:
+        love.draw(screen)
+    items['oranges_s'].clear()
+    for ora in range(chars['player'].oranges):
+        items['oranges_s'].append(characters.Orange_Small(ora*32, 48))
+    for small_citrus in items['oranges_s']:
+        small_citrus.draw(screen)
     
 
     for y in range(24, 18, -1) :
@@ -402,7 +425,7 @@ def InGame_Menu():
     window.geometry('%dx%d+%d+%d' % (w, h, x, y))
 
     window.resizable(False,False)
-    clickables = tk.Frame(master=window)
+    clickables = tk.Frame(master=window, bg = 'white')
     title = tk.Label(master=window,text="Game Menu", font=("Trebuchet MS",42), bg='orange',
     fg = 'blue')
     title.grid(row=0,column=0)
@@ -421,13 +444,14 @@ def InGame_Menu():
 
     exchange = tk.Button(
         master=clickables,
-        text="Exchange Flex Bucks",
+        text="Flex Bucks to Oranges\n10:1",
         width = 18,
         height = 1, 
         font=("Trebuchet MS",24),
         bg = 'white',
-        fg = 'blue'
+        fg = 'blue', 
     )
+    exchange.config(command=lambda:Exchange(exchange))
     exchange.pack()
 
     return_main_menu = tk.Button(
@@ -550,9 +574,23 @@ def Menu_Background():
     pg.display.update()
 
 
+def Exchange(button):
+    if (chars['player'].coins >= 10):
+        chars['player'].exchange()
+        coins_left = str(chars['player'].coins)
+        button.config(text="Exchange Complete!\n" + coins_left + " Flex Bucks left.",
+        state=tk.DISABLED)
+    else:
+        coins_needed = str(10-chars['player'].coins)
+        button.config(text="Not Enough Flex Bucks!\nYou need " + coins_needed + " more.",
+        state=tk.DISABLED)
+
+
 def multifunction(*args):
     for function in args:
         function()
 
 
 Main()
+
+#winning screen

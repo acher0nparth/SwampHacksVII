@@ -4,6 +4,7 @@ import random
 import pygame as pg
 import tkinter as tk
 import os
+import pygame_gui as pgui
 from settings import screen,screen_width,screen_width 
 from pygame.locals import *
 
@@ -13,11 +14,14 @@ def Main():
 
 
 def Game_Loop():
+    pg.init()
 
     knights = []
     bulldogs = []
     cash = []
     oranges = []
+    oranges_s = []
+    heart = []
 
     chars = {
     'player' : characters.Gator(),
@@ -33,14 +37,22 @@ def Game_Loop():
 
     items = {
         'cash' : cash,
-        'oranges' : oranges
+        'oranges' : oranges,
+        'oranges_s' : oranges_s,
+        'heart' : heart
     }
+
+    items['heart'].append(characters.Heart(0, 0))
+    items['heart'].append(characters.Heart(48, 0))
+    items['heart'].append(characters.Heart(96, 0))
 
     chars['bulldog'].append(characters.Bulldog(100, 480, 1340))
     chars['knight'].append(characters.Knight(100, 450, 1180))
 
     items['cash'].append(characters.Bucks(200, 300))
     items['oranges'].append(characters.Orange(300, 300))
+    items['oranges'].append(characters.Orange(350, 350))
+    items['oranges'].append(characters.Orange(300, 350))
 
     haduk = []
     haduk_loop = 0
@@ -51,9 +63,9 @@ def Game_Loop():
     clock = pg.time.Clock()
     # Run until the user asks to quit
     running = True
-    dead = False
     while running:
         
+        dead = chars['player'].isDead
         if haduk_loop > 0:
             haduk_loop += 1
         if haduk_loop > 10:
@@ -102,11 +114,15 @@ def Game_Loop():
                 if chars['player'].y < bd.hitbox[1] + bd.hitbox[3] and chars['player'].y > bd.hitbox[1]:
                     if chars['player'].x > bd.hitbox[0] and chars['player'].x < bd.hitbox[0] + bd.hitbox[2]:
                         chars['player'].take_damage()
+                        items['heart'].pop() 
+                        #pg.time.set_timer(USEREVENT + 2, 3000)
         for kn in chars['knight']:
             if len(chars['knight']) > 0:
                 if chars['player'].y < kn.hitbox[1] + kn.hitbox[3] and chars['player'].y > kn.hitbox[1]:
                     if chars['player'].x > kn.hitbox[0] and chars['player'].x < kn.hitbox[0] + kn.hitbox[2]:
                         chars['player'].take_damage()
+                        items['heart'].pop() 
+                        #pg.time.set_timer(USEREVENT +2, 3000)
         for cs in items['cash']:
             if len(items['cash']) > 0:
                 if chars['player'].y < cs.hitbox[1] + cs.hitbox[3] and chars['player'].y > cs.hitbox[1]:
@@ -119,6 +135,12 @@ def Game_Loop():
                     if chars['player'].x > ora.hitbox[0] and chars['player'].x < ora.hitbox[0] + ora.hitbox[2]:
                         chars['player'].gain_orange()
                         items['oranges'].pop(items['oranges'].index(ora))
+
+        # if event.type == USEREVENT + 2:
+        #     chars['player'].isInvulnerable = True
+        #     print('invulnerable')
+        # else:
+        #     chars['player'].isInvulnerable = False
 
         pressed_keys = pg.key.get_pressed()
         chars['player'].update(pressed_keys)
@@ -182,7 +204,14 @@ def redrawGameWindow(screen, background, chars, terr, background_x, haduk, items
     for buck in items['cash']:
         buck.draw(screen) 
     for citrus in items['oranges']:
-        citrus.draw(screen)    
+        citrus.draw(screen) 
+    for love in items['heart']:
+        love.draw(screen)
+    items['oranges_s'].clear()
+    for ora in range(chars['player'].oranges):
+        items['oranges_s'].append(characters.Orange_Small(ora*32, 48))
+    for small_citrus in items['oranges_s']:
+        small_citrus.draw(screen)
     
 
     for y in range(24, 18, -1) :

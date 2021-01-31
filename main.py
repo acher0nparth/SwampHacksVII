@@ -4,7 +4,6 @@ import random
 import pygame as pg
 import tkinter as tk
 import os
-import pygame_gui as pgui
 from settings import screen,screen_width,screen_width 
 from pygame.locals import *
 
@@ -49,9 +48,6 @@ def Game_Loop():
     items['heart'].append(characters.Heart(0, 0))
     items['heart'].append(characters.Heart(48, 0))
     items['heart'].append(characters.Heart(96, 0))
-
-    chars['bulldog'].append(characters.Bulldog(100, 480, 1340))
-    chars['knight'].append(characters.Knight(100, 450, 1180))
 
     items['cash'].append(characters.Bucks(200, 300))
     items['oranges'].append(characters.Orange(300, 300))
@@ -172,14 +168,14 @@ def Game_Loop():
                     if chars['player'].x > bd.hitbox[0] and chars['player'].x < bd.hitbox[0] + bd.hitbox[2]:
                         chars['player'].take_damage()
                         items['heart'].pop() 
-                        #pg.time.set_timer(USEREVENT + 2, 3000)
+                        pg.time.set_timer(USEREVENT + 2, 3000)
         for kn in chars['knight']:
             if len(chars['knight']) > 0:
                 if chars['player'].y < kn.hitbox[1] + kn.hitbox[3] and chars['player'].y > kn.hitbox[1]:
                     if chars['player'].x > kn.hitbox[0] and chars['player'].x < kn.hitbox[0] + kn.hitbox[2]:
                         chars['player'].take_damage()
                         items['heart'].pop() 
-                        #pg.time.set_timer(USEREVENT +2, 3000)
+                        pg.time.set_timer(USEREVENT +3, 3000)
         for cs in items['cash']:
             if len(items['cash']) > 0:
                 if chars['player'].y < cs.hitbox[1] + cs.hitbox[3] and chars['player'].y > cs.hitbox[1]:
@@ -193,11 +189,11 @@ def Game_Loop():
                         chars['player'].gain_orange()
                         items['oranges'].pop(items['oranges'].index(ora))
 
-        # if event.type == USEREVENT + 2:
-        #     chars['player'].isInvulnerable = True
-        #     print('invulnerable')
-        # else:
-        #     chars['player'].isInvulnerable = False
+        if event.type == USEREVENT + 2 or event.type == USEREVENT + 3:
+            chars['player'].isInvulnerable = True
+            print('invulnerable')
+        else:
+            chars['player'].isInvulnerable = False
 
         pressed_keys = pg.key.get_pressed()
         chars['player'].update(pressed_keys)

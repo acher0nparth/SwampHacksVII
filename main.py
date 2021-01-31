@@ -86,7 +86,7 @@ def Game_Loop():
                 if event.key == K_m :
                     InGame_Menu()
 
-            if event.type == USEREVENT + 1 and enemiesCount[0] < 0:
+            if event.type == USEREVENT + 1 and enemiesCount[0] < 8:
                 r = random.randrange(0, 6)
                 if platforms :
                     platSpawn = random.randrange(0, 4)

@@ -410,7 +410,7 @@ def InGame_Menu():
     window.overrideredirect(1)
 
     w = 334# width for the Tk root
-    h = 356 # height for the Tk root
+    h = 460 # height for the Tk root
 
     # get screen width and height
     ws = window.winfo_screenwidth() # width of the screen
@@ -442,7 +442,7 @@ def InGame_Menu():
     )
     resume_game.pack()
 
-    exchange = tk.Button(
+    ex_oranges = tk.Button(
         master=clickables,
         text="Flex Bucks to Oranges\n10:1",
         width = 18,
@@ -451,8 +451,20 @@ def InGame_Menu():
         bg = 'white',
         fg = 'blue', 
     )
-    exchange.config(command=lambda:Exchange_Flex(exchange))
-    exchange.pack()
+    ex_oranges.config(command=lambda:Exchange_Oranges(ex_oranges))
+    ex_oranges.pack()
+
+    ex_health = tk.Button(
+        master=clickables,
+        text="Flex Bucks to HP\n5:1",
+        width = 18,
+        height = 1, 
+        font=("Trebuchet MS",24),
+        bg = 'white',
+        fg = 'blue', 
+    )
+    ex_health.config(command=lambda:Exchange_Health(ex_health))
+    ex_health.pack()
 
     return_main_menu = tk.Button(
         master=clickables,
@@ -574,14 +586,29 @@ def Menu_Background():
     pg.display.update()
 
 
-def Exchange_Flex(button):
+def Exchange_Oranges(button):
     if (chars['player'].coins >= 10):
-        chars['player'].exchange()
+        chars['player'].exchange_oranges()
         coins_left = str(chars['player'].coins)
         button.config(text="Exchange Complete!\n" + coins_left + " Flex Bucks left.",
         state=tk.DISABLED)
     else:
         coins_needed = str(10-chars['player'].coins)
+        button.config(text="Not Enough Flex Bucks!\nYou need " + coins_needed + " more.",
+        state=tk.DISABLED)
+
+ 
+def Exchange_Health(button):
+    if (chars['player'].coins >= 5 and chars['player'].health < 3):
+        chars['player'].exchange_health()
+        coins_left = str(chars['player'].coins)
+        button.config(text="Exchange Complete!\n" + coins_left + " Flex Bucks left.",
+        state=tk.DISABLED)
+    elif chars['player'].health >= 3:
+        button.config(text="You have max health!",
+        state=tk.DISABLED)
+    else:
+        coins_needed = str(5-chars['player'].coins)
         button.config(text="Not Enough Flex Bucks!\nYou need " + coins_needed + " more.",
         state=tk.DISABLED)
 

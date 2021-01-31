@@ -83,9 +83,11 @@ class Gator(pg.sprite.Sprite):
         print('oranges: ', self.oranges)
 
     def exchange(self):
-        self.coin = self.coins - 10
-        self.oranges += 1
-    
+        while self.coins >= 10:
+            self.coin = self.coins - 10
+            self.oranges += 1
+        return self.coins
+        
 
 class Bulldog(pg.sprite.Sprite):
     width = 64 #CHANGE BASED ON SIZE OF SPRITE

@@ -20,6 +20,7 @@ def Game_Loop():
     oranges = []
     enemiesCount = [0]
 
+    global chars
     chars = {
     'player' : characters.Gator(),
     'bulldog' : bulldogs, 
@@ -386,7 +387,7 @@ def InGame_Menu():
     window.geometry('%dx%d+%d+%d' % (w, h, x, y))
 
     window.resizable(False,False)
-    clickables = tk.Frame(master=window)
+    clickables = tk.Frame(master=window, bg = 'white')
     title = tk.Label(master=window,text="Game Menu", font=("Trebuchet MS",42), bg='orange',
     fg = 'blue')
     title.grid(row=0,column=0)
@@ -405,13 +406,14 @@ def InGame_Menu():
 
     exchange = tk.Button(
         master=clickables,
-        text="Exchange Flex Bucks",
+        text="Flex Bucks to Oranges\n10:1",
         width = 18,
         height = 1, 
         font=("Trebuchet MS",24),
         bg = 'white',
-        fg = 'blue'
+        fg = 'blue', 
     )
+    exchange.config(command=lambda:Exchange(exchange))
     exchange.pack()
 
     return_main_menu = tk.Button(
@@ -534,9 +536,23 @@ def Menu_Background():
     pg.display.update()
 
 
+def Exchange(button):
+    if (chars['player'].coins > 10):
+        chars['player'].exchange()
+        coins_left = str(chars['player'].coins)
+        button.config(text="Exchange Complete!\n" + coins_left + " Flex Bucks left.",
+        state=tk.DISABLED)
+    else:
+        coins_needed = str(10-chars['player'].coins)
+        button.config(text="Not Enough Flex Bucks!\nYou need " + coins_needed + " more.",
+        state=tk.DISABLED)
+
+
 def multifunction(*args):
     for function in args:
         function()
 
 
 Main()
+
+#winning screen

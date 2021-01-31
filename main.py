@@ -4,9 +4,9 @@ import random
 import pygame as pg
 import tkinter as tk
 import os
-import pygame_gui as pgui
 from settings import screen,screen_width,screen_width 
 from pygame.locals import *
+
 
 def Main():
 

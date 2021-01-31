@@ -91,7 +91,6 @@ class Gator(pg.sprite.Sprite):
     def exchange(self):
         while self.coins >= 10:
             self.coin = self.coins - 10
-            self.oranges += 1
             self.gain_orange()
         return self.coins
         

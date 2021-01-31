@@ -442,7 +442,7 @@ def InGame_Menu():
         bg = 'white',
         fg = 'blue', 
     )
-    exchange.config(command=lambda:Exchange(exchange))
+    exchange.config(command=lambda:Exchange_Flex(exchange))
     exchange.pack()
 
     return_main_menu = tk.Button(
@@ -565,7 +565,7 @@ def Menu_Background():
     pg.display.update()
 
 
-def Exchange(button):
+def Exchange_Flex(button):
     if (chars['player'].coins >= 10):
         chars['player'].exchange()
         coins_left = str(chars['player'].coins)
@@ -585,3 +585,4 @@ def multifunction(*args):
 Main()
 
 #winning screen
+#exchange flex bucks for hp

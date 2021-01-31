@@ -69,14 +69,16 @@ def Game_Loop():
     running = True
     while running:
         
-        dead = chars['player'].isDead
+        chars['player'].isDead
         if haduk_loop > 0:
             haduk_loop += 1
         if haduk_loop > 10:
             haduk_loop = 0
         #get every event in the queue
-        if dead:
+        if chars['player'].isDead:
             Death_Screen()
+        if chars['player'].oranges==6:
+            Victory_Screen()
         for event in pg.event.get():
             if event.type == KEYDOWN :
                 if event.key == K_ESCAPE :
@@ -528,8 +530,8 @@ def Death_Screen():
     window.overrideredirect(1)
     frame=tk.Frame(window,borderwidth=0,highlightthickness=0,bg='red')
     frame.pack()
-    w = 1000# width for the Tk root
-    h = 750 # height for the Tk root
+    w = 550# width for the Tk root
+    h = 720 # height for the Tk root
     # get screen width and height
     ws = window.winfo_screenwidth() # width of the screen
     hs = window.winfo_screenheight() # height of the screen
@@ -543,26 +545,15 @@ def Death_Screen():
     window.geometry('%dx%d+%d+%d' % (w, h, x, y))
     window.resizable(False,False)
     game_over=tk.PhotoImage(file="GameOver.png")
-    game_over_canvas = tk.Canvas(master=frame, bg='red', width=1000, height=500, highlightthickness=0)
+    game_over_canvas = tk.Canvas(master=frame, bg='red', width=550, height=400, highlightthickness=0)
     game_over_canvas.pack()
-    game_over_canvas.create_image(500,261,image=game_over)
+    game_over_canvas.create_image(275,225,image=game_over)
 
     dead_gator=tk.PhotoImage(file='DeadGator.png')
-    dead_gator_canvas=tk.Canvas(master=frame,bg='red',width=200,height=125,highlightthickness=0)
+    dead_gator_canvas=tk.Canvas(master=frame,bg='red',width=100,height=100,highlightthickness=0)
     dead_gator_canvas.pack(side=tk.TOP)
-    dead_gator_canvas.create_image(90,77,image=dead_gator)
+    dead_gator_canvas.create_image(50,50,image=dead_gator)
 
-    start_game = tk.Button(
-        text="New Game",
-        width = 15,
-        height = 1, 
-        font=("Trebuchet MS",24),
-        command=lambda:multifunction(window.destroy(),Game_Loop()),
-        bg = 'black',
-        fg = 'red',
-        compound=tk.LEFT
-    )
-    start_game.pack()
 
     quit_game = tk.Button(
         window,
@@ -574,7 +565,74 @@ def Death_Screen():
         bg = 'black',
         fg = 'red'
     )
-    quit_game.pack()
+    quit_game.pack(side=tk.BOTTOM)
+
+    start_game = tk.Button(
+        text="New Game",
+        width = 15,
+        height = 1, 
+        font=("Trebuchet MS",24),
+        command=lambda:multifunction(window.destroy(),Game_Loop()),
+        bg = 'black',
+        fg = 'red',
+    )
+    start_game.pack(side=tk.BOTTOM)
+
+    window.mainloop()
+
+
+def Victory_Screen():
+    window=tk.Tk()
+    window['background']='blue'
+    window.overrideredirect(1)
+    frame=tk.Frame(window,borderwidth=0,highlightthickness=0,bg='blue')
+    frame.pack(side=tk.TOP)
+    w = 450# width for the Tk root
+    h = 720 # height for the Tk root
+    # get screen width and height
+    ws = window.winfo_screenwidth() # width of the screen
+    hs = window.winfo_screenheight() # height of the screen
+
+    # calculate x and y coordinates for the Tk root window
+    x = (ws/2) - (w/2)
+    y = (hs/2) - (h/2)
+
+    # set the dimensions of the screen 
+    # and where it is placed
+    window.geometry('%dx%d+%d+%d' % (w, h, x, y))
+    window.resizable(False,False)
+    win=tk.PhotoImage(file="YouWin.png")
+    win_canvas = tk.Canvas(master=frame, bg='blue', width=450, height=400, highlightthickness=0)
+    win_canvas.pack()
+    win_canvas.create_image(225,225, image=win)
+
+    gator=tk.PhotoImage(file='WinGator.png')
+    gator_canvas=tk.Canvas(master=frame,bg='blue',width=100,height=100,highlightthickness=0)
+    gator_canvas.pack(side=tk.TOP)
+    gator_canvas.create_image(50,50,image=gator)
+
+    quit_game = tk.Button(
+        window,
+        text="Quit to Desktop",
+        width = 15,
+        height = 1, 
+        font=("Trebuchet MS",24),
+        command=lambda:multifunction(window.destroy(),pg.quit()),
+        bg = 'orange',
+        fg = 'blue'
+    )
+    quit_game.pack(side=tk.BOTTOM)
+
+    start_game = tk.Button(
+        text="New Game",
+        width = 15,
+        height = 1, 
+        font=("Trebuchet MS",24),
+        command=lambda:multifunction(window.destroy(),Game_Loop()),
+        bg = 'orange',
+        fg = 'blue'
+    )
+    start_game.pack(side=tk.BOTTOM)
 
     window.mainloop()
 

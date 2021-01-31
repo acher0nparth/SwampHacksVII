@@ -591,6 +591,6 @@ def multifunction(*args):
         function()
 
 
-Main()
+Main() 
 
 #winning screen

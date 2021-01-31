@@ -37,17 +37,41 @@ class Gator(pg.sprite.Sprite):
         self.health = 3
         self.isDead = False
         self.isInvulnerable = False
+        self.onPlatform = False
+        self.platform_y = 720
+        self.platform_beg = 0
+        self.platform_end = 0
+        self.onGround = True
+        self.Falling = False
 
     def update(self, pressed_keys):
         if (pressed_keys[K_LEFT] or pressed_keys[K_a]) and self.x > self.vel :
             self.x -= self.vel
             self.left = True
             self.right = False
+            
+            if pressed_keys[K_UP] or pressed_keys[K_w] :
+                pass
+
+            elif self.y < 538 and self.Falling :
+                self.y += 25
+                if self.y >= 538 :
+                    self.y = 538
+                    self.Falling = False
+
         elif (pressed_keys[K_RIGHT] or pressed_keys[K_d]) :
             if self.x < screen_width * 4 / 5 - self.width - self.vel :
                 self.x += self.vel
             self.left = False
             self.right = True
+            
+            if pressed_keys[K_UP] or pressed_keys[K_w] :
+                pass
+            elif self.y < 538 and self.Falling:
+                self.y += 25
+                if self.y >= 538 :
+                    self.y = 538
+                    self.Falling = False
         else :
             if self.right:
                 self.wasLeft = False
@@ -57,18 +81,31 @@ class Gator(pg.sprite.Sprite):
             self.left = False
             self.walkCount = 0
 
-        if not (self.isJump) :
+        if not self.isJump :
             if pressed_keys[K_w] or pressed_keys[K_UP] :
                 self.isJump = True
                 self.right = False
                 self.left = False
                 self.walkCount = 0
-        else :
+                if self.y < 538 :
+                    self.isJump = True
+
+        elif self.isJump :
             if self.jumpCount >= -10 :
                 neg = 1
+                print(str(self.jumpCount))
+
                 if self.jumpCount < 0 :
                     neg = -1
                 self.y -= (self.jumpCount ** 2) *0.5 * neg
+                if self.onPlatform :
+                    if self.y > self.platform_y - 29:
+                        self.y = self.platform_y - 29
+                else :
+                    if self.y < 538 and self.Falling:
+                        self.y += 10
+                    if self.y >= 538 :
+                        self.y = 538
                 self.jumpCount -= 1
             else :
                 self.isJump = False
@@ -132,8 +169,15 @@ class Bulldog(pg.sprite.Sprite):
         self.onPlatform = False
         self.option = 1
         self.spawn = False
+        self.afterSpawn = False
 
     def draw(self, screen):
+        if not self.spawn and not self.onPlatform:
+            ran = random.randrange(0, 2)
+            if ran < 1 :
+                self.x = self.path[1] - 1
+                self.spawn = True
+
         self.move(self.option)
         if self.walk_count + 1 >= 36:
             self.walk_count = 0
@@ -149,9 +193,11 @@ class Bulldog(pg.sprite.Sprite):
             screen.blit(self.walkLeft[self.walk_count//3], (self.x, self.y))
             self.walk_count += 1  
         self.hitbox = (self.x, self.y-20, 70, 60) 
-        #pg.draw.rect(screen, (0,255,0), self.hitbox, 2)
+        pg.draw.rect(screen, (0,255,0), self.hitbox, 2)         
+        if self.afterSpawn and not self.onPlatform:
+            self.x = 64
+            self.afterSpawn = False
 
-             
 
     def move(self, option): 
         if self.vel >= 0:
@@ -200,8 +246,16 @@ class Knight(pg.sprite.Sprite):
         self.isRight = False
         self.onPlatform = False
         self.option = 1
+        self.spawn = False
+        self.afterSpawn = True
 
     def draw(self, screen):
+        if not self.spawn and not self.onPlatform:
+            ran = random.randrange(0, 2)
+            if ran < 1 :
+                self.x = self.path[1] - 1
+                self.spawn = True
+        
         self.move(self.option)
         if self.walk_count + 1 >= 39:
             self.walk_count = 0
@@ -216,8 +270,12 @@ class Knight(pg.sprite.Sprite):
                 self.x = self.path[1] - 1
             screen.blit(self.walkLeft[self.walk_count//3], (self.x, self.y))
             self.walk_count += 1  
-        self.hitbox = (self.x, self.y-10, 45, 65) 
-        #pg.draw.rect(screen, (0,255,0), self.hitbox, 2)           
+        self.hitbox = (self.x, self.y-10, 45, 65)
+        pg.draw.rect(screen, (0,255,0), self.hitbox, 2)           
+        if self.afterSpawn and not self.onPlatform:
+            self.x = 64
+            self.afterSpawn = False
+
 
     def move(self, option):
         if self.vel > 0:

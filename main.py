@@ -86,7 +86,7 @@ def Game_Loop():
                 if event.key == K_m :
                     InGame_Menu()
 
-            if event.type == USEREVENT + 1 and enemiesCount[0] < 8:
+            if event.type == USEREVENT + 1 and enemiesCount[0] < 0:
                 r = random.randrange(0, 6)
                 if platforms :
                     platSpawn = random.randrange(0, 4)
@@ -125,17 +125,18 @@ def Game_Loop():
             if r < 6:
                 orange = random.randrange(0, 35)
                 if orange < 1 :
-                    oranges.append(characters.Orange(background.get_rect().width + 35, y_pos))
+                    oranges.append(characters.Orange(background.get_rect().width + 16, y_pos))
                 platforms.append(terrain.Platform(background.get_rect().width, y_pos))
             else :
                 orange = False
-                if r > 14 :
                 #1 long brown platform
-                    oj = random.randrange(0, 35)
-                    if oj < 1 :
-                        oranges.append(characters.Orange(background.get_rect().width + 48, y_pos - 108))
-                        orange = True
-                    platforms.append(terrain.LongPlatform(background.get_rect().width, y_pos))
+                oj = random.randrange(0, 35)
+                if oj < 1 :
+                    oranges.append(characters.Orange(background.get_rect().width + 16, y_pos - 108))
+                    orange = True
+                platforms.append(terrain.LongPlatform(background.get_rect().width, y_pos))
+
+                if r > 14 :
                     #1 long and 1 short above 
                     y_pos = random.randrange(244, 322)
                     x_pos = random.randrange(0, 97)
@@ -171,7 +172,6 @@ def Game_Loop():
             else:
                 haduk.pop(haduk.index(had))
 
-        
         #collision detection for player    
         for bd in chars['bulldog']:
             if len(chars['bulldog']) > 0:
@@ -182,7 +182,6 @@ def Game_Loop():
                         items['heart'].pop() 
                         invulnerableTimer = pg.time.get_ticks()
                         hit = True
-                        print("is invulnerable")
         for kn in chars['knight']:
             if len(chars['knight']) > 0:
                 if chars['player'].y < kn.hitbox[1] + kn.hitbox[3] and chars['player'].y > kn.hitbox[1] and not chars['player'].isInvulnerable:
@@ -192,7 +191,6 @@ def Game_Loop():
                         items['heart'].pop() 
                         invulnerableTimer = pg.time.get_ticks()
                         hit = True
-                        print("is invulnerable")
         for cs in items['cash']:
             if len(items['cash']) > 0:
                 if chars['player'].y < cs.hitbox[1] + cs.hitbox[3] and chars['player'].y > cs.hitbox[1]:
@@ -211,10 +209,29 @@ def Game_Loop():
             if finishTimer - invulnerableTimer > 3000 : #CHANGE THIS TO CHANGE THE AMOUNT OF TIME OF INVULERNABILITY
                 chars['player'].isInvulnerable = False
                 hit = False
-                print("player invulnerable status is : " + str(chars['player'].isInvulnerable))
 
         pressed_keys = pg.key.get_pressed()
         chars['player'].update(pressed_keys)
+
+        
+        for platform in terr['platforms'] :
+            if len(terr['platforms']) :
+                if chars['player'].x > platform.x and chars['player'].x < platform.x + platform.width * 3 :
+                    if chars['player'].y < platform.y + 16 and chars['player'].y > platform.y - 64:
+                        chars['player'].onPlatform = True
+                        chars['player'].Falling = False
+                        chars['player'].platform_y = platform.y
+                        chars['player'].platform_beg = platform.x
+                        chars['player'].platform_end = platform.x + platform.width * 3
+
+        if chars['player'].onPlatform :
+            if chars['player'].x < chars['player'].platform_beg + 1 or chars['player'].x > chars['player'].platform_end + 1:
+                chars['player'].onPlatform = False
+                chars['player'].Falling = True
+        
+        if chars['player'].Falling :
+            if chars['player'].y == 538 :
+                chars['player'].Falling = False
 
         if pressed_keys[K_SPACE] and haduk_loop == 0:
             if chars['player'].left:
@@ -252,7 +269,7 @@ def redrawGameWindow(screen, background, chars, terr, background_x, haduk, items
         dog.option = 1
     for knight in chars['knight'] :
         knight.option = 1
-    
+
     if chars['player'].walkCount + 1 >= 59 :
         chars['player'].walkCount = 0
     if chars['player'].left :
@@ -264,6 +281,8 @@ def redrawGameWindow(screen, background, chars, terr, background_x, haduk, items
         if chars['player'].x >= screen_width * 4 / 5 - chars['player'].width * 3 - chars['player'].vel :
             background_x[0] -= 5
             steps[0] += 5
+            chars['player'].platform_end -= 5
+            chars['player'].platform_beg -=5
             for buck in items['cash'] :
                 buck.x -= 5
             for orange in items['oranges'] :

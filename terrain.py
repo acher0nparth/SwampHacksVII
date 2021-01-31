@@ -26,11 +26,10 @@ class Platform(pg.sprite.Sprite) :
         self.height = 8
         self.x = x
         self.y = y
-        self.hitbox = (x, y, self.width, self.height)
+        self.hitbox = (self.x, self.y, self.width * 3, self.height * 2)
         self.texture = pg.image.load('brown_platform.png')
 
     def draw(self, screen) :
-        self.hitbox = (self.x, self.y, self.width * 3, self.height * 2)
         screen.blit(pg.transform.scale(self.texture, (96, 16)), (self.x, self.y))
         pg.draw.rect(screen, (255,0 ,0), self.hitbox, 2)
 
@@ -40,10 +39,9 @@ class LongPlatform(pg.sprite.Sprite) :
         self.height = 8
         self.x = x
         self.y = y
-        self.hitbox = (x, y, self.width, self.height)
+        self.hitbox = (self.x, self.y, self.width * 3, self.height * 2)
         self.texture = pg.image.load('longbrown_platform.png')
 
     def draw(self, screen) :
-        self.hitbox = (self.x, self.y, self.width * 3, self.height * 2)
         screen.blit(pg.transform.scale(self.texture, (192, 16)), (self.x, self.y))
         pg.draw.rect(screen, (255, 0, 0), self.hitbox, 2)

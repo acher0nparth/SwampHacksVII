@@ -37,17 +37,41 @@ class Gator(pg.sprite.Sprite):
         self.health = 3
         self.isDead = False
         self.isInvulnerable = False
+        self.onPlatform = False
+        self.platform_y = 720
+        self.platform_beg = 0
+        self.platform_end = 0
+        self.onGround = True
+        self.Falling = False
 
     def update(self, pressed_keys):
         if (pressed_keys[K_LEFT] or pressed_keys[K_a]) and self.x > self.vel :
             self.x -= self.vel
             self.left = True
             self.right = False
+            
+            if pressed_keys[K_UP] or pressed_keys[K_w] :
+                pass
+
+            elif self.y < 538 and self.Falling :
+                self.y += 25
+                if self.y >= 538 :
+                    self.y = 538
+                    self.Falling = False
+
         elif (pressed_keys[K_RIGHT] or pressed_keys[K_d]) :
             if self.x < screen_width * 4 / 5 - self.width - self.vel :
                 self.x += self.vel
             self.left = False
             self.right = True
+            
+            if pressed_keys[K_UP] or pressed_keys[K_w] :
+                pass
+            elif self.y < 538 and self.Falling:
+                self.y += 25
+                if self.y >= 538 :
+                    self.y = 538
+                    self.Falling = False
         else :
             if self.right:
                 self.wasLeft = False
@@ -57,18 +81,31 @@ class Gator(pg.sprite.Sprite):
             self.left = False
             self.walkCount = 0
 
-        if not (self.isJump) :
+        if not self.isJump :
             if pressed_keys[K_w] or pressed_keys[K_UP] :
                 self.isJump = True
                 self.right = False
                 self.left = False
                 self.walkCount = 0
-        else :
+                if self.y < 538 :
+                    self.isJump = True
+
+        elif self.isJump :
             if self.jumpCount >= -10 :
                 neg = 1
+                print(str(self.jumpCount))
+
                 if self.jumpCount < 0 :
                     neg = -1
                 self.y -= (self.jumpCount ** 2) *0.5 * neg
+                if self.onPlatform :
+                    if self.y > self.platform_y - 29:
+                        self.y = self.platform_y - 29
+                else :
+                    if self.y < 538 and self.Falling:
+                        self.y += 10
+                    if self.y >= 538 :
+                        self.y = 538
                 self.jumpCount -= 1
             else :
                 self.isJump = False
@@ -76,18 +113,17 @@ class Gator(pg.sprite.Sprite):
         
     def take_damage(self):
         if not self.isInvulnerable :
-            print('ouch')
             self.health = self.health - 1
             if self.health == 0:
                 self.isDead = True
 
     def gain_coin(self):
         self.coins += 1
-        print('flex bucks: ', self.coins)
+        #print('flex bucks: ', self.coins)
 
     def gain_orange(self):
         self.oranges += 1
-        print('oranges: ', self.oranges)
+        #print('oranges: ', self.oranges)
 
     def exchange(self):
         while self.coins >= 10:
@@ -175,7 +211,8 @@ class Bulldog(pg.sprite.Sprite):
                 self.walk_count = 0
 
     def hit(self):
-        print('hit bulldog')
+        pass
+        #print('hit bulldog')
 
 class Knight(pg.sprite.Sprite):
     width = 64 #CHANGE BASED ON SIZE OF SPRITE
@@ -256,7 +293,8 @@ class Knight(pg.sprite.Sprite):
                 self.walk_count = 0
     
     def hit(self):
-        print('hit knight')
+        pass
+        #print('hit knight')
 
 class Haduken(pg.sprite.Sprite):
     vel = 8

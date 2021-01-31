@@ -211,9 +211,9 @@ def redrawGameWindow(screen, background, chars, terr, background_x, haduk, items
     if relative_background_x < screen_width :
         screen.blit(background, (relative_background_x, 0))
 
-    for dog in chars['bulldogs'] :
+    for dog in chars['bulldog'] :
         dog.option = 1
-    for knight in chars['knights'] :
+    for knight in chars['knight'] :
         knight.option = 1
     
     if chars['player'].walkCount + 1 >= 59 :
@@ -237,7 +237,7 @@ def redrawGameWindow(screen, background, chars, terr, background_x, haduk, items
                     dog.path[0] -= 5
                     dog.path[1] -= 5
                     if dog.path[1] < 0 :
-                        dog.kill()
+                        chars['bulldog'].pop(chars['bulldog'].index(dog))
                         enemiesCount[0] -= 1
                     if dog.isRight :
                         dog.option = 2
@@ -246,7 +246,7 @@ def redrawGameWindow(screen, background, chars, terr, background_x, haduk, items
                     knight.path[0] -= 5
                     knight.path[1] -= 5
                     if knight.path[1] < 0 :
-                        knight.kill()
+                        chars['knight'].pop(chars['knight'].index(knight))
                         enemiesCount[0] -= 1
                 if knight.isRight : 
                     knight.option = 2

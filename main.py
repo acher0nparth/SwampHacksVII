@@ -138,7 +138,7 @@ def Game_Loop():
                     y_pos = random.randrange(244, 322)
                     x_pos = random.randrange(0, 97)
                     if not orange :
-                        oj = random.randrange(0, 1)
+                        oj = random.randrange(0, 25)
                         if oj < 1 :
                             oranges.append(characters.Orange(background.get_rect().width + 64, y_pos - 108))
                             orange = True

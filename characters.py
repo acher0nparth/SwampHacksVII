@@ -75,7 +75,6 @@ class Gator(pg.sprite.Sprite):
                 self.jumpCount = 10
         
     def take_damage(self):
-        print('ouch')
         if self.isInvulnerable:   
             self.health = self.health - 1
         if self.health == 0:
@@ -83,11 +82,11 @@ class Gator(pg.sprite.Sprite):
 
     def gain_coin(self):
         self.coins += 1
-        print('flex bucks: ', self.coins)
+        #print('flex bucks: ', self.coins)
 
     def gain_orange(self):
         self.oranges += 1
-        print('oranges: ', self.oranges)
+        #print('oranges: ', self.oranges)
 
     def exchange_oranges(self):
         while self.coins >= 10:
@@ -135,11 +134,6 @@ class Bulldog(pg.sprite.Sprite):
         self.spawn = False
 
     def draw(self, screen):
-        # if not(self.spawn):
-        #     ran = random.randrange(0, 2)
-        # if ran < 1:
-        #     self.x = self.path[1] - 1
-        #     self.spawn = True
         self.move(self.option)
         if self.walk_count + 1 >= 36:
             self.walk_count = 0
@@ -155,7 +149,7 @@ class Bulldog(pg.sprite.Sprite):
             screen.blit(self.walkLeft[self.walk_count//3], (self.x, self.y))
             self.walk_count += 1  
         self.hitbox = (self.x, self.y-20, 70, 60) 
-        pg.draw.rect(screen, (0,255,0), self.hitbox, 2)
+        #pg.draw.rect(screen, (0,255,0), self.hitbox, 2)
 
              
 
@@ -177,10 +171,7 @@ class Bulldog(pg.sprite.Sprite):
             else:
                 self.vel = self.vel * -1
                 self.walk_count = 0
-
-    def hit(self):
-        print('hit bulldog')
-
+                
 class Knight(pg.sprite.Sprite):
     width = 64 #CHANGE BASED ON SIZE OF SPRITE
     height = 64 #CHANGE BASED ON SIZE OF SPRITE
@@ -226,7 +217,7 @@ class Knight(pg.sprite.Sprite):
             screen.blit(self.walkLeft[self.walk_count//3], (self.x, self.y))
             self.walk_count += 1  
         self.hitbox = (self.x, self.y-10, 45, 65) 
-        pg.draw.rect(screen, (0,255,0), self.hitbox, 2)           
+        #pg.draw.rect(screen, (0,255,0), self.hitbox, 2)           
 
     def move(self, option):
         if self.vel > 0:
@@ -246,9 +237,6 @@ class Knight(pg.sprite.Sprite):
             else:
                 self.vel = self.vel * -1
                 self.walk_count = 0
-    
-    def hit(self):
-        print('hit knight')
 
 class Haduken(pg.sprite.Sprite):
     vel = 8
@@ -270,7 +258,7 @@ class Haduken(pg.sprite.Sprite):
         else: 
             screen.blit(self.hadukenL, (self.x, self.y)) 
         self.hitbox = (self.x + 8, self.y + 6, 26, 22) 
-        pg.draw.rect(screen, (0,255,0), self.hitbox, 2)             
+        #pg.draw.rect(screen, (0,255,0), self.hitbox, 2)             
 
 class Orange(pg.sprite.Sprite):
 
@@ -284,7 +272,7 @@ class Orange(pg.sprite.Sprite):
     def draw(self, screen):
         screen.blit(self.orange, (self.x, self.y))
         self.hitbox = (self.x + 35, self.y + 20, 70, 70) 
-        pg.draw.rect(screen, (0,255,0), self.hitbox, 2)  
+        #pg.draw.rect(screen, (0,255,0), self.hitbox, 2)  
 
 
 class Bucks(pg.sprite.Sprite):
@@ -299,7 +287,7 @@ class Bucks(pg.sprite.Sprite):
     def draw(self, screen):
         screen.blit(self.flex_bucks, (self.x, self.y))
         self.hitbox = (self.x + 10, self.y, 30, 40) 
-        pg.draw.rect(screen, (0,255,0), self.hitbox, 2) 
+        #pg.draw.rect(screen, (0,255,0), self.hitbox, 2) 
 
 class Heart(pg.sprite.Sprite):
 

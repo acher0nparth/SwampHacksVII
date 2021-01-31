@@ -32,7 +32,7 @@ class Platform(pg.sprite.Sprite) :
     def draw(self, screen) :
         self.hitbox = (self.x, self.y, self.width * 3, self.height * 2)
         screen.blit(pg.transform.scale(self.texture, (96, 16)), (self.x, self.y))
-        pg.draw.rect(screen, (255,0 ,0), self.hitbox, 2)
+        #pg.draw.rect(screen, (255,0 ,0), self.hitbox, 2)
 
 class LongPlatform(pg.sprite.Sprite) :
     def __init__(self, x, y) :
@@ -46,4 +46,4 @@ class LongPlatform(pg.sprite.Sprite) :
     def draw(self, screen) :
         self.hitbox = (self.x, self.y, self.width * 3, self.height * 2)
         screen.blit(pg.transform.scale(self.texture, (192, 16)), (self.x, self.y))
-        pg.draw.rect(screen, (255, 0, 0), self.hitbox, 2)
+        #pg.draw.rect(screen, (255, 0, 0), self.hitbox, 2)

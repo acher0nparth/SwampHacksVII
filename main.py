@@ -150,7 +150,6 @@ def Game_Loop():
                 if len(chars['bulldog']) > 0:
                     if had.y - 11 < bd.hitbox[1] + bd.hitbox[3] and had.y > bd.hitbox[1]:
                         if had.x + 13 > bd.hitbox[0] and had.x - 13 < bd.hitbox[0] + bd.hitbox[2]:
-                            bd.hit()
                             haduk.pop(haduk.index(had))
                             cash.append(characters.Bucks(bd.x, bd.y))
                             chars['bulldog'].pop(chars['bulldog'].index(bd))
@@ -159,7 +158,6 @@ def Game_Loop():
                 if len(chars['knight']) > 0:
                     if had.y - 11 < kn.hitbox[1] + kn.hitbox[3] and had.y > kn.hitbox[1]:
                         if had.x + 13 > kn.hitbox[0] and had.x - 13 < kn.hitbox[0] + kn.hitbox[2]:
-                            kn.hit()
                             haduk.pop(haduk.index(had))
                             cash.append(characters.Bucks(kn.x, kn.y))
                             chars['knight'].pop(chars['knight'].index(kn))           
@@ -213,7 +211,6 @@ def Game_Loop():
                 else:
                     facing = 1
             if len(haduk) < 5:
-                #haduk.append(characters.Haduken(round((chars['player'].x + chars['player'].width)//2), round((chars['player'].y + chars['player'].height)//2), facing))
                 haduk.append(characters.Haduken(chars['player'].x, chars['player'].y, facing))
             haduk_loop = 1
     
@@ -285,7 +282,7 @@ def redrawGameWindow(screen, background, chars, terr, background_x, haduk, items
         else :
             screen.blit(chars['player'].player_standR, (chars['player'].x, chars['player'].y))
     chars['player'].hitbox = (chars['player'].x, chars['player'].y, 24, 36)
-    pg.draw.rect(screen, (255,0,0), chars['player'].hitbox, 2)
+    #pg.draw.rect(screen, (255,0,0), chars['player'].hitbox, 2)
 
     for had in haduk:
         had.draw(screen)

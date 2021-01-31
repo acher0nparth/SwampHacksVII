@@ -11,6 +11,7 @@ def Main():
 
     Start_Menu() 
 
+
 def Game_Loop():
 
     chars = {
@@ -123,7 +124,7 @@ def redrawGameWindow(screen, background, chars, terr, background_x, haduk) :
 
 def Start_Menu():
     Menu_Background()
-    
+
     window = tk.Tk()
     window['background']='orange'
     window.overrideredirect(1)

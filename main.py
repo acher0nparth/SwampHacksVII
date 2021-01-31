@@ -678,5 +678,3 @@ def multifunction(*args):
 
 Main() 
 
-#winning screen
-#exchange flex bucks for hp

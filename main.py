@@ -23,6 +23,7 @@ def Game_Loop():
     enemiesCount = [0]
     oranges_s = []
     heart = []
+    hud_c = []
 
     global chars
     chars = {
@@ -41,6 +42,7 @@ def Game_Loop():
 
     items = {
         'cash' : cash,
+        'hud_cash' : hud_c,
         'oranges' : oranges,
         'oranges_s' : oranges_s,
         'heart' : heart
@@ -61,7 +63,7 @@ def Game_Loop():
     hit = False
 
     pg.init()
-    pg.time.set_timer(USEREVENT + 1, random.randrange(2500, 3500))
+    pg.time.set_timer(USEREVENT + 1, random.randrange(1500, 2500))
 
     # Run until the user asks to quit
     running = True
@@ -120,14 +122,14 @@ def Game_Loop():
             y_pos = random.randrange(400, 461)
             #1 small brown platform
             if r < 6:
-                orange = random.randrange(0, 35)
+                orange = random.randrange(0, 20)
                 if orange < 1 :
                     oranges.append(characters.Orange(background.get_rect().width + 16, y_pos))
                 platforms.append(terrain.Platform(background.get_rect().width, y_pos))
             else :
                 orange = False
                 #1 long brown platform
-                oj = random.randrange(0, 35)
+                oj = random.randrange(0, 20)
                 if oj < 1 :
                     oranges.append(characters.Orange(background.get_rect().width + 16, y_pos - 108))
                     orange = True
@@ -138,7 +140,7 @@ def Game_Loop():
                     y_pos = random.randrange(244, 322)
                     x_pos = random.randrange(0, 97)
                     if not orange :
-                        oj = random.randrange(0, 25)
+                        oj = random.randrange(0, 12)
                         if oj < 1 :
                             oranges.append(characters.Orange(background.get_rect().width + 64, y_pos - 108))
                             orange = True
@@ -177,7 +179,6 @@ def Game_Loop():
                     if chars['player'].x > bd.hitbox[0] and chars['player'].x < bd.hitbox[0] + bd.hitbox[2]:
                         chars['player'].take_damage()
                         chars['player'].isInvulnerable = True
-                        print("vulnerable")
                         items['heart'].pop() 
                         invulnerableTimer = pg.time.get_ticks()
                         hit = True
@@ -185,10 +186,7 @@ def Game_Loop():
             if len(chars['knight']) > 0:
                 if chars['player'].y < kn.hitbox[1] + kn.hitbox[3] and chars['player'].y > kn.hitbox[1] and not chars['player'].isInvulnerable:
                     if chars['player'].x > kn.hitbox[0] and chars['player'].x < kn.hitbox[0] + kn.hitbox[2]:
-                        print("ouch")
                         chars['player'].take_damage()
-                        chars['player'].isInvulnerable = True
-                        print("vulnerable")
                         items['heart'].pop() 
                         invulnerableTimer = pg.time.get_ticks()
                         hit = True
@@ -208,7 +206,6 @@ def Game_Loop():
         if hit :
             finishTimer = pg.time.get_ticks()
             if finishTimer - invulnerableTimer > 3000 : #CHANGE THIS TO CHANGE THE AMOUNT OF TIME OF INVULERNABILITY
-                print("no longer invulnerable")
                 chars['player'].isInvulnerable = False
                 hit = False
 
@@ -334,6 +331,11 @@ def redrawGameWindow(screen, background, chars, terr, background_x, haduk, items
         buck.draw(screen) 
     for citrus in items['oranges']:
         citrus.draw(screen) 
+    items['hud_cash'].clear()
+    for hc in range(chars['player'].coins):
+        items['hud_cash'].append(characters.Bucks(hc*25, 48))
+    for money in items['hud_cash']:
+        money.draw(screen)
     items['heart'].clear()
     for ht in range(chars['player'].health):
         items['heart'].append(characters.Heart(ht*48, 0))
@@ -341,7 +343,7 @@ def redrawGameWindow(screen, background, chars, terr, background_x, haduk, items
         love.draw(screen)
     items['oranges_s'].clear()
     for ora in range(chars['player'].oranges):
-        items['oranges_s'].append(characters.Orange_Small(ora*32, 48))
+        items['oranges_s'].append(characters.Orange_Small(ora*28, 84))
     for small_citrus in items['oranges_s']:
         small_citrus.draw(screen)
     

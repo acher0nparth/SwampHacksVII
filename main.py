@@ -143,9 +143,6 @@ def Game_Loop():
                             oranges.append(characters.Orange(background.get_rect().width + 64, y_pos - 108))
                             orange = True
                     platforms.append(terrain.Platform(background.get_rect().width + x_pos, y_pos))
-        
-
-
 
         for had in haduk:
             for bd in chars['bulldog']:
@@ -170,8 +167,6 @@ def Game_Loop():
             else:
                 haduk.pop(haduk.index(had))
 
-
-
         #collision detection for player    
         for bd in chars['bulldog']:
             if len(chars['bulldog']) > 0:
@@ -179,6 +174,7 @@ def Game_Loop():
                     if chars['player'].x > bd.hitbox[0] and chars['player'].x < bd.hitbox[0] + bd.hitbox[2]:
                         chars['player'].take_damage()
                         chars['player'].isInvulnerable = True
+                        print("vulnerable")
                         items['heart'].pop() 
                         invulnerableTimer = pg.time.get_ticks()
                         hit = True
@@ -186,8 +182,10 @@ def Game_Loop():
             if len(chars['knight']) > 0:
                 if chars['player'].y < kn.hitbox[1] + kn.hitbox[3] and chars['player'].y > kn.hitbox[1] and not chars['player'].isInvulnerable:
                     if chars['player'].x > kn.hitbox[0] and chars['player'].x < kn.hitbox[0] + kn.hitbox[2]:
+                        print("ouch")
                         chars['player'].take_damage()
                         chars['player'].isInvulnerable = True
+                        print("vulnerable")
                         items['heart'].pop() 
                         invulnerableTimer = pg.time.get_ticks()
                         hit = True
@@ -207,6 +205,7 @@ def Game_Loop():
         if hit :
             finishTimer = pg.time.get_ticks()
             if finishTimer - invulnerableTimer > 3000 : #CHANGE THIS TO CHANGE THE AMOUNT OF TIME OF INVULERNABILITY
+                print("no longer invulnerable")
                 chars['player'].isInvulnerable = False
                 hit = False
 

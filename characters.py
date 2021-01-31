@@ -75,10 +75,11 @@ class Gator(pg.sprite.Sprite):
                 self.jumpCount = 10
         
     def take_damage(self):
-        print('ouch')
-        self.health = self.health - 1
-        if self.health == 0:
-            self.isDead = True
+        if not self.isInvulnerable :
+            print('ouch')
+            self.health = self.health - 1
+            if self.health == 0:
+                self.isDead = True
 
     def gain_coin(self):
         self.coins += 1
@@ -123,8 +124,16 @@ class Bulldog(pg.sprite.Sprite):
         self.isRight = False
         self.onPlatform = False
         self.option = 1
+        self.spawn = False
+        self.afterSpawn = False
 
     def draw(self, screen):
+        if not self.spawn and not self.onPlatform:
+            ran = random.randrange(0, 2)
+            if ran < 1 :
+                self.x = self.path[1] - 1
+                self.spawn = True
+
         self.move(self.option)
         if self.walk_count + 1 >= 36:
             self.walk_count = 0
@@ -141,6 +150,10 @@ class Bulldog(pg.sprite.Sprite):
             self.walk_count += 1  
         self.hitbox = (self.x, self.y-20, 70, 60) 
         pg.draw.rect(screen, (0,255,0), self.hitbox, 2)         
+        if self.afterSpawn and not self.onPlatform:
+            self.x = 64
+            self.afterSpawn = False
+
 
     def move(self, option): 
         if self.vel >= 0:
@@ -192,8 +205,16 @@ class Knight(pg.sprite.Sprite):
         self.isRight = False
         self.onPlatform = False
         self.option = 1
+        self.spawn = False
+        self.afterSpawn = True
 
     def draw(self, screen):
+        if not self.spawn and not self.onPlatform:
+            ran = random.randrange(0, 2)
+            if ran < 1 :
+                self.x = self.path[1] - 1
+                self.spawn = True
+        
         self.move(self.option)
         if self.walk_count + 1 >= 39:
             self.walk_count = 0
@@ -208,8 +229,12 @@ class Knight(pg.sprite.Sprite):
                 self.x = self.path[1] - 1
             screen.blit(self.walkLeft[self.walk_count//3], (self.x, self.y))
             self.walk_count += 1  
-        self.hitbox = (self.x, self.y-10, 45, 65) 
+        self.hitbox = (self.x, self.y-10, 45, 65)
         pg.draw.rect(screen, (0,255,0), self.hitbox, 2)           
+        if self.afterSpawn and not self.onPlatform:
+            self.x = 64
+            self.afterSpawn = False
+
 
     def move(self, option):
         if self.vel > 0:

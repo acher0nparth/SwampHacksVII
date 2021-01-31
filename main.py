@@ -61,6 +61,8 @@ def Game_Loop():
     haduk_loop = 0
 
     steps = [0]
+    invulnerableTimer = pg.time.get_ticks()
+    hit = False
 
     pg.init()
     pg.time.set_timer(USEREVENT + 1, random.randrange(2500, 3500))
@@ -115,7 +117,6 @@ def Game_Loop():
                 running = False
 
         #moving this up to allow enemies to spawn on potential platforns
-        #USE THIS TO SPAWN ORANGES AS WELL
         if steps[0] == 720 :
             steps[0] = 0
             r = random.randrange(0, 21)
@@ -170,21 +171,28 @@ def Game_Loop():
             else:
                 haduk.pop(haduk.index(had))
 
+        
         #collision detection for player    
         for bd in chars['bulldog']:
             if len(chars['bulldog']) > 0:
-                if chars['player'].y < bd.hitbox[1] + bd.hitbox[3] and chars['player'].y > bd.hitbox[1]:
+                if chars['player'].y < bd.hitbox[1] + bd.hitbox[3] and chars['player'].y > bd.hitbox[1] and not chars['player'].isInvulnerable:
                     if chars['player'].x > bd.hitbox[0] and chars['player'].x < bd.hitbox[0] + bd.hitbox[2]:
                         chars['player'].take_damage()
+                        chars['player'].isInvulnerable = True
                         items['heart'].pop() 
-                        #pg.time.set_timer(USEREVENT + 2, 3000)
+                        invulnerableTimer = pg.time.get_ticks()
+                        hit = True
+                        print("is invulnerable")
         for kn in chars['knight']:
             if len(chars['knight']) > 0:
-                if chars['player'].y < kn.hitbox[1] + kn.hitbox[3] and chars['player'].y > kn.hitbox[1]:
+                if chars['player'].y < kn.hitbox[1] + kn.hitbox[3] and chars['player'].y > kn.hitbox[1] and not chars['player'].isInvulnerable:
                     if chars['player'].x > kn.hitbox[0] and chars['player'].x < kn.hitbox[0] + kn.hitbox[2]:
                         chars['player'].take_damage()
+                        chars['player'].isInvulnerable = True
                         items['heart'].pop() 
-                        #pg.time.set_timer(USEREVENT +2, 3000)
+                        invulnerableTimer = pg.time.get_ticks()
+                        hit = True
+                        print("is invulnerable")
         for cs in items['cash']:
             if len(items['cash']) > 0:
                 if chars['player'].y < cs.hitbox[1] + cs.hitbox[3] and chars['player'].y > cs.hitbox[1]:
@@ -198,11 +206,12 @@ def Game_Loop():
                         chars['player'].gain_orange()
                         items['oranges'].pop(items['oranges'].index(ora))
 
-        # if event.type == USEREVENT + 2:
-        #     chars['player'].isInvulnerable = True
-        #     print('invulnerable')
-        # else:
-        #     chars['player'].isInvulnerable = False
+        if hit :
+            finishTimer = pg.time.get_ticks()
+            if finishTimer - invulnerableTimer > 3000 : #CHANGE THIS TO CHANGE THE AMOUNT OF TIME OF INVULERNABILITY
+                chars['player'].isInvulnerable = False
+                hit = False
+                print("player invulnerable status is : " + str(chars['player'].isInvulnerable))
 
         pressed_keys = pg.key.get_pressed()
         chars['player'].update(pressed_keys)

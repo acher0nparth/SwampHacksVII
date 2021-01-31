@@ -76,7 +76,8 @@ class Gator(pg.sprite.Sprite):
         
     def take_damage(self):
         print('ouch')
-        self.health = self.health - 1
+        if self.isInvulnerable:   
+            self.health = self.health - 1
         if self.health == 0:
             self.isDead = True
 
@@ -90,8 +91,7 @@ class Gator(pg.sprite.Sprite):
 
     def exchange(self):
         while self.coins >= 10:
-            self.coin = self.coins - 10
-            self.oranges += 1
+            self.coins = self.coins - 10
             self.gain_orange()
         return self.coins
         
@@ -123,8 +123,14 @@ class Bulldog(pg.sprite.Sprite):
         self.isRight = False
         self.onPlatform = False
         self.option = 1
+        self.spawn = False
 
     def draw(self, screen):
+        # if not(self.spawn):
+        #     ran = random.randrange(0, 2)
+        # if ran < 1:
+        #     self.x = self.path[1] - 1
+        #     self.spawn = True
         self.move(self.option)
         if self.walk_count + 1 >= 36:
             self.walk_count = 0
@@ -140,7 +146,9 @@ class Bulldog(pg.sprite.Sprite):
             screen.blit(self.walkLeft[self.walk_count//3], (self.x, self.y))
             self.walk_count += 1  
         self.hitbox = (self.x, self.y-20, 70, 60) 
-        pg.draw.rect(screen, (0,255,0), self.hitbox, 2)         
+        pg.draw.rect(screen, (0,255,0), self.hitbox, 2)
+
+             
 
     def move(self, option): 
         if self.vel >= 0:

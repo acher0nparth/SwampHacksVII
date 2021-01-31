@@ -11,10 +11,15 @@ def Main():
 
 def Game_Loop():
 
+    knights = []
+    bulldogs = []
+    cash = []
+    oranges = []
+
     chars = {
     'player' : characters.Gator(),
-    'bulldog' : characters.Bulldog(100, 360, 1340), 
-    'knight' : characters.Knight(100, 450, 1180)
+    'bulldog' : bulldogs, 
+    'knight' : knights
     }
 
     terr = {
@@ -23,7 +28,19 @@ def Game_Loop():
         'platform_br' : terrain.Platform(1000, 400)
     }
 
+    items = {
+        'cash' : cash,
+        'oranges' : oranges
+    }
+
+    chars['bulldog'].append(characters.Bulldog(100, 480, 1340))
+    chars['knight'].append(characters.Knight(100, 450, 1180))
+
+    items['cash'].append(characters.Bucks(200, 300))
+    items['oranges'].append(characters.Orange(300, 300))
+
     haduk = []
+    haduk_loop = 0
 
     screen_width = 1440
     screen_height = 720
@@ -38,6 +55,11 @@ def Game_Loop():
     # Run until the user asks to quit
     running = True
     while running:
+        
+        if haduk_loop > 0:
+            haduk_loop += 1
+        if haduk_loop > 10:
+            haduk_loop = 0
         #get every event in the queue
         for event in pg.event.get():
             if event.type == KEYDOWN :
@@ -50,16 +72,58 @@ def Game_Loop():
             if event.type == QUIT:
                 running = False
 
+        #collision detection for haduken
         for had in haduk:
+            for bd in chars['bulldog']:
+                if len(chars['bulldog']) > 0:
+                    if had.y - 11 < bd.hitbox[1] + bd.hitbox[3] and had.y > bd.hitbox[1]:
+                        if had.x + 13 > bd.hitbox[0] and had.x - 13 < bd.hitbox[0] + bd.hitbox[2]:
+                            bd.hit()
+                            haduk.pop(haduk.index(had))
+                            cash.append(characters.Bucks(bd.x, bd.y))
+                            chars['bulldog'].pop()
+            for kn in chars['knight']:
+                if len(chars['knight']) > 0:
+                    if had.y - 11 < kn.hitbox[1] + kn.hitbox[3] and had.y > kn.hitbox[1]:
+                        if had.x + 13 > kn.hitbox[0] and had.x - 13 < kn.hitbox[0] + kn.hitbox[2]:
+                            kn.hit()
+                            haduk.pop(haduk.index(had))
+                            cash.append(characters.Bucks(kn.x, kn.y))
+                            chars['knight'].pop()           
+
             if had.x < 1440 and had.x > 0:
                 had.x = had.x + had.vel
             else:
                 haduk.pop(haduk.index(had))
-        
+
+        #collision detection for player    
+        for bd in chars['bulldog']:
+            if len(chars['bulldog']) > 0:
+                if chars['player'].y < bd.hitbox[1] + bd.hitbox[3] and chars['player'].y > bd.hitbox[1]:
+                    if chars['player'].x > bd.hitbox[0] and chars['player'].x < bd.hitbox[0] + bd.hitbox[2]:
+                        chars['player'].take_damage()
+        for kn in chars['knight']:
+            if len(chars['knight']) > 0:
+                if chars['player'].y < kn.hitbox[1] + kn.hitbox[3] and chars['player'].y > kn.hitbox[1]:
+                    if chars['player'].x > kn.hitbox[0] and chars['player'].x < kn.hitbox[0] + kn.hitbox[2]:
+                        chars['player'].take_damage()
+        for cs in items['cash']:
+            if len(items['cash']) > 0:
+                if chars['player'].y < cs.hitbox[1] + cs.hitbox[3] and chars['player'].y > cs.hitbox[1]:
+                    if chars['player'].x > cs.hitbox[0] and chars['player'].x < cs.hitbox[0] + cs.hitbox[2]:
+                        chars['player'].gain_coin()
+                        items['cash'].pop(items['cash'].index(cs))
+        for ora in items['oranges']:
+            if len(items['oranges']) > 0:
+                if chars['player'].y < ora.hitbox[1] + ora.hitbox[3] and chars['player'].y > ora.hitbox[1]:
+                    if chars['player'].x > ora.hitbox[0] and chars['player'].x < ora.hitbox[0] + ora.hitbox[2]:
+                        chars['player'].gain_orange()
+                        items['oranges'].pop(items['oranges'].index(ora))
+
         pressed_keys = pg.key.get_pressed()
         chars['player'].update(pressed_keys)
 
-        if pressed_keys[K_SPACE]:
+        if pressed_keys[K_SPACE] and haduk_loop == 0:
             if chars['player'].left:
                 facing = -1
             elif chars['player'].right:
@@ -69,13 +133,12 @@ def Game_Loop():
                     facing = -1
                 else:
                     facing = 1
-
-            if len(haduk) < 3:
+            if len(haduk) < 5:
                 #haduk.append(characters.Haduken(round((chars['player'].x + chars['player'].width)//2), round((chars['player'].y + chars['player'].height)//2), facing))
                 haduk.append(characters.Haduken(chars['player'].x, chars['player'].y, facing))
+            haduk_loop = 1
 
-
-        redrawGameWindow(screen, background, chars, terr, background_x, haduk)
+        redrawGameWindow(screen, background, chars, terr, background_x, haduk, items)
 
         clock.tick(60)
 
@@ -83,7 +146,7 @@ def Game_Loop():
     pg.quit()
 
 
-def redrawGameWindow(screen, background, chars, terr, background_x, haduk) :
+def redrawGameWindow(screen, background, chars, terr, background_x, haduk, items) :
     relative_background_x = background_x[0] % background.get_rect().width
     screen_width = background.get_rect().width
 
@@ -107,11 +170,21 @@ def redrawGameWindow(screen, background, chars, terr, background_x, haduk) :
             screen.blit(chars['player'].player_standL, (chars['player'].x, chars['player'].y))
         else :
             screen.blit(chars['player'].player_standR, (chars['player'].x, chars['player'].y))
-    
+    chars['player'].hitbox = (chars['player'].x, chars['player'].y, 24, 36)
+    pg.draw.rect(screen, (255,0,0), chars['player'].hitbox, 2)
+
     for had in haduk:
         had.draw(screen)
-    chars['bulldog'].draw(screen)
-    chars['knight'].draw(screen)
+    for bull in chars['bulldog']:
+        bull.draw(screen)
+    for kni in chars['knight']:
+        kni.draw(screen)
+    for buck in items['cash']:
+        buck.draw(screen) 
+    for citrus in items['oranges']:
+        citrus.draw(screen)    
+    
+
     for y in range(24, 18, -1) :
         for x in range(33) :
             terr['dirt'].draw(screen, x * terr['dirt'].width, y * terr['dirt'].height)

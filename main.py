@@ -660,8 +660,7 @@ def Exchange_Health(button):
     if (chars['player'].coins >= 5 and chars['player'].health < 3):
         chars['player'].exchange_health()
         coins_left = str(chars['player'].coins)
-        button.config(text="Exchange Complete!\n" + coins_left + " Flex Bucks left.",
-        state=tk.DISABLED)
+        button.config(text="Exchange Complete!\n" + coins_left + " Flex Bucks left.")
     elif chars['player'].health >= 3:
         button.config(text="You have max health!",
         state=tk.DISABLED)

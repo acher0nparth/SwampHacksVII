@@ -165,7 +165,10 @@ def Game_Loop():
             if had.x < 1440 and had.x > 0:
                 had.x = had.x + had.vel
             else:
-                haduk.pop(haduk.index(had))
+                try:
+                    haduk.pop(haduk.index(had))
+                except ValueError:
+                    pass
 
         #collision detection for player    
         for bd in chars['bulldog']:

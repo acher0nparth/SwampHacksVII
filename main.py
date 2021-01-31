@@ -46,10 +46,6 @@ def Game_Loop():
         'heart' : heart
     }
 
-    items['heart'].append(characters.Heart(0, 0))
-    items['heart'].append(characters.Heart(48, 0))
-    items['heart'].append(characters.Heart(96, 0))
-
     haduk = []
     haduk_loop = 0
 
@@ -317,7 +313,7 @@ def redrawGameWindow(screen, background, chars, terr, background_x, haduk, items
         else :
             screen.blit(chars['player'].player_standR, (chars['player'].x, chars['player'].y))
     chars['player'].hitbox = (chars['player'].x, chars['player'].y, 24, 36)
-    pg.draw.rect(screen, (255,0,0), chars['player'].hitbox, 2)
+    #pg.draw.rect(screen, (255,0,0), chars['player'].hitbox, 2)
 
     for had in haduk:
         had.draw(screen)

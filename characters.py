@@ -267,7 +267,7 @@ class Knight(pg.sprite.Sprite):
             screen.blit(self.walkLeft[self.walk_count//3], (self.x, self.y))
             self.walk_count += 1  
         self.hitbox = (self.x, self.y-10, 45, 65)
-        pg.draw.rect(screen, (0,255,0), self.hitbox, 2)           
+        #pg.draw.rect(screen, (0,255,0), self.hitbox, 2)           
         if self.afterSpawn and not self.onPlatform:
             self.x = 64
             self.afterSpawn = False
@@ -330,7 +330,7 @@ class Orange(pg.sprite.Sprite):
     def draw(self, screen):
         screen.blit(self.orange, (self.x, self.y))
         self.hitbox = (self.x + 35, self.y + 20, 70, 70) 
-        pg.draw.rect(screen, (0,255,0), self.hitbox, 2)  
+        #pg.draw.rect(screen, (0,255,0), self.hitbox, 2)  
 
 
 class Bucks(pg.sprite.Sprite):
@@ -345,7 +345,7 @@ class Bucks(pg.sprite.Sprite):
     def draw(self, screen):
         screen.blit(self.flex_bucks, (self.x, self.y))
         self.hitbox = (self.x + 10, self.y, 30, 40) 
-        pg.draw.rect(screen, (0,255,0), self.hitbox, 2) 
+        #pg.draw.rect(screen, (0,255,0), self.hitbox, 2) 
 
 class Heart(pg.sprite.Sprite):
 

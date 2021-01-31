@@ -363,7 +363,7 @@ def Start_Menu():
     window.overrideredirect(1)
 
     w = 334# width for the Tk root
-    h = 286 # height for the Tk root
+    h = 192 # height for the Tk root
 
     # get screen width and height
     ws = window.winfo_screenwidth() # width of the screen
@@ -404,19 +404,6 @@ def Start_Menu():
         compound=tk.LEFT
     )
     start_game.pack(side = tk.TOP)
-
-    disp_highscores = tk.Button(
-        master=clickables,
-        text="   Highscores",
-        width = 334,
-        height = 50, 
-        font=("Trebuchet MS",24),
-        bg = 'white',
-        fg = 'blue',
-        image = images['highscores'],
-        compound = tk.LEFT
-    )
-    disp_highscores.pack()
 
     quit_game = tk.Button(
         master=clickables,

@@ -11,22 +11,24 @@ def Main():
 
 def Game_Loop():
 
+    platform_enemies = []
+    floor_enemies = []
+    enemiesCount = [0]
+    bulldogs = []
+    knights = []
+
     chars = {
     'player' : characters.Gator(),
-    'bulldog' : characters.Bulldog(100, 360, 1340),
-    'knight' : characters.Knight(100, 450, 1180)
-    }
-
-    terr = {
-        'grass' : terrain.Grass(),
-        'dirt' : terrain.Dirt(),
+    'bulldogs' : bulldogs,
+    'knights' : knights
     }
 
     platforms = []
-
-    object = {
-        'platform_br' : terrain.Platform(1000, 400),
-        'platform' : platforms
+    
+    terr = {
+        'grass' : terrain.Grass(),
+        'dirt' : terrain.Dirt(),
+        'platforms' : platforms
     }
 
     screen_width = 1440
@@ -42,13 +44,12 @@ def Game_Loop():
     steps = [0]
 
     pg.init()
-    pg.time.set_timer(USEREVENT+1, 5000)
-    pg.time.set_timer(USEREVENT+2, random.randrange(2000, 35000))
+    pg.time.set_timer(USEREVENT + 1, random.randrange(2500, 3500))
 
     # Run until the user asks to quit
     running = True
     while running:
-        
+
         if haduk_loop > 0 :
             haduk_loop += 1
         if haduk_loop > 5 :
@@ -60,13 +61,40 @@ def Game_Loop():
                     running = False
                 elif event.key == K_m :
                     InGame_Menu()
-            # if event.type == USEREVENT+1 :
+
+            if event.type == USEREVENT + 1 and enemiesCount[0] < 1:
+                r = random.randrange(0, 6)
+                if platforms :
+                    platSpawn = random.randrange(0, 3)
+                else :
+                    platSpawn = 0
+                if platSpawn < 3 :
+                    for x in platforms : 
+                        r = random.randrange(0, 2)
+                        if r == 0 :
+                            dog = characters.Bulldog(x.x, x.y - 64, x.x + x.width * 2)
+                            dog.onPlatform = True
+                            bulldogs.append(dog)
+                        else :
+                            knight = characters.Knight(x.x, x.y - 64, x.x + x.width * 2)
+                            knight.onPlatform = True
+                            knights.append(knight)
+                        enemiesCount[0] += 1
+                else :
+                    r = random.randrange(0, 5)
+                    if r < 3 :
+                        bulldogs.append(characters.Bulldog(0, 503, screen_width))
+                    else :
+                        knights.append(characters.Knight(0, 502, screen_width))
+                    enemiesCount[0] += 1
 
             # Did the user click the window close button? If so, stop the loop.
             if event.type == QUIT:
                 running = False
-            
-        if steps[0] == 480 :
+
+        #moving this up to allow enemies to spawn on potential platforns
+        #USE THIS TO SPAWN ORANGES AS WELL
+        if steps[0] == 720 :
             steps[0] = 0
             r = random.randrange(0, 21)
             y_pos = random.randrange(400, 461)
@@ -105,7 +133,7 @@ def Game_Loop():
                 haduk.append(characters.Haduken(chars['player'].x, chars['player'].y, facing))
             haduk_loop = 1
 
-        redrawGameWindow(screen, background, chars, terr, background_x, haduk, platforms, steps)
+        redrawGameWindow(screen, background, chars, terr, background_x, haduk, steps, enemiesCount)
 
         clock.tick(60)
 
@@ -113,7 +141,7 @@ def Game_Loop():
     pg.quit()
 
 
-def redrawGameWindow(screen, background, chars, terr, background_x, haduk, platforms, steps) :
+def redrawGameWindow(screen, background, chars, terr, background_x, haduk, steps, enemiesCount) :
     relative_background_x = background_x[0] % background.get_rect().width
     screen_width = background.get_rect().width
 
@@ -122,6 +150,11 @@ def redrawGameWindow(screen, background, chars, terr, background_x, haduk, platf
     if relative_background_x < screen_width :
         screen.blit(background, (relative_background_x, 0))
 
+    for dog in chars['bulldogs'] :
+        dog.option = 1
+    for knight in chars['knights'] :
+        knight.option = 1
+    
     if chars['player'].walkCount + 1 >= 59 :
         chars['player'].walkCount = 0
     if chars['player'].left :
@@ -132,13 +165,30 @@ def redrawGameWindow(screen, background, chars, terr, background_x, haduk, platf
         chars['player'].walkCount += 1
         if chars['player'].x >= screen_width * 4 / 5 - chars['player'].width * 3 - chars['player'].vel :
             background_x[0] -= 5
-            if not platforms :
-                steps[0] += 5
-            else :
-                for x in platforms :
+            steps[0] += 5
+            if terr['platforms'] :
+                for x in terr['platforms'] :
                     x.x -= 5
                     if x.x < - (x.width * 3):
-                        platforms.pop(0)
+                        terr['platforms'].pop(0)
+            for dog in chars['bulldogs'] :
+                if dog.onPlatform :
+                    dog.path[0] -= 5
+                    dog.path[1] -= 5
+                    if dog.path[1] < 0 :
+                        dog.kill()
+                        enemiesCount[0] -= 1
+                    if dog.isRight :
+                        dog.option = 2
+            for knight in chars['knights'] :
+                if knight.onPlatform :
+                    knight.path[0] -= 5
+                    knight.path[1] -= 5
+                    if knight.path[1] < 0 :
+                        knight.kill()
+                        enemiesCount[0] -= 1
+                if knight.isRight : 
+                    knight.option = 2
 
     else :
         if chars['player'].wasLeft :
@@ -148,11 +198,8 @@ def redrawGameWindow(screen, background, chars, terr, background_x, haduk, platf
     
     for had in haduk:
         had.draw(screen)
-    
-    chars['bulldog'].draw(screen)
-    chars['knight'].draw(screen)
 
-    for x in platforms :
+    for x in terr['platforms'] :
         x.draw(screen)
 
     for y in range(24, 18, -1) :
@@ -161,6 +208,11 @@ def redrawGameWindow(screen, background, chars, terr, background_x, haduk, platf
     for x in range (33) :
         terr['grass'].draw(screen, x * terr['grass'].width, 570) #take screen_height and - dirt layers
     
+    for dog in chars['bulldogs'] :
+        dog.draw(screen)
+
+    for knight in chars['knights'] :
+        knight.draw(screen)
 
     pg.display.update()
 

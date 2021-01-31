@@ -94,30 +94,42 @@ class Bulldog(pg.sprite.Sprite):
         self.height = Bulldog.height
         self.width = Bulldog.width
         self.walk_count = 0
-        self.vel = 2
+        self.vel = 3
         self.path = [x, end]
+        self.isRight = False
+        self.onPlatform = False
+        self.option = 1
 
     def draw(self, screen):
-        self.move()
+        self.move(self.option)
         if self.walk_count + 1 >= 36:
             self.walk_count = 0
-    
+
         if self.vel > 0:
+            if self.x > self.path[1] :
+                self.x = self.path[1] - 1
             screen.blit(self.walkRight[self.walk_count//3], (self.x, self.y))
             self.walk_count += 1
         else:
+            if self.x > self.path[1] :
+                self.x = self.path[1] - 1
             screen.blit(self.walkLeft[self.walk_count//3], (self.x, self.y))
             self.walk_count += 1            
 
-    def move(self): 
-        if self.vel > 0:
+    def move(self, option): 
+        if self.vel >= 0:
             if self.x  + self.vel < self.path[1]:
-                self.x += self.vel
+                self.isRight = True
+                if option == 1 :
+                    self.x += self.vel
+                else :
+                    self.x += 1
             else:
                 self.vel = self.vel * -1
                 self.walk_count = 0
         else:
             if self.x - self.vel > self.path[0]:
+                self.isRight = False
                 self.x += self.vel
             else:
                 self.vel = self.vel * -1
@@ -146,35 +158,46 @@ class Knight(pg.sprite.Sprite):
         self.height = Knight.height
         self.width = Knight.width
         self.walk_count = 0
-        self.vel = 3
+        self.vel = 2
         self.path = [x, end]
+        self.isRight = False
+        self.onPlatform = False
+        self.option = 1
 
     def draw(self, screen):
-        self.move()
+        self.move(self.option)
         if self.walk_count + 1 >= 39:
             self.walk_count = 0
-    
+
         if self.vel > 0:
+            if self.x > self.path[1] :
+                self.x = self.path[1] - 1
             screen.blit(self.walkRight[self.walk_count//3], (self.x, self.y))
             self.walk_count += 1
         else:
+            if self.x > self.path[1] :
+                self.x = self.path[1] - 1
             screen.blit(self.walkLeft[self.walk_count//3], (self.x, self.y))
             self.walk_count += 1            
 
-    def move(self):
+    def move(self, option):
         if self.vel > 0:
             if self.x  + self.vel < self.path[1]:
-                self.x += self.vel
+                self.isRight = True
+                if option == 1 :
+                    self.x += self.vel
+                else :
+                    self.x += 1
             else:
                 self.vel = self.vel * -1
                 self.walk_count = 0
         else:
             if self.x - self.vel > self.path[0]:
+                self.isRight = False
                 self.x += self.vel
             else:
                 self.vel = self.vel * -1
                 self.walk_count = 0
-
 
 class Haduken(pg.sprite.Sprite):
     vel = 8
